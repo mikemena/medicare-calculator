@@ -1,0 +1,91 @@
+.service-selector-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.service-selector-container h2 {
+  color: #333;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 10px;
+}
+
+.service-selector-container h3 {
+  color: #555;
+  margin-top: 20px;
+}
+
+.service-category {
+  margin-bottom: 20px;
+}
+
+.service-dropdown {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.service-dropdown label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.service-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+}
+
+.service-list-item {
+  /* background-color: #f9f9f9; */
+  /* border: 1px solid #ddd; */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  /* display: flex;
+  align-items: center; */
+}
+
+.minutes-input {
+  margin: 10px;
+  width: 60px;
+}
+
+.remove-service-btn {
+  background-color: #ff4d4d;
+  height: 35px;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  order: -1;
+}
+
+.remove-service-btn:hover {
+  background-color: #ff3333;
+}
+
+.clear-all-btn {
+  height: 35px;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  margin: 10px;
+}

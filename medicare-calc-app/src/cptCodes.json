@@ -1,0 +1,62 @@
+{
+  "service-based": [
+    {
+      "service": "PT evaluation",
+      "codes": ["97161", "97162", "97163"]
+    },
+    {
+      "service": "PT re-evaluation",
+      "codes": ["97164"]
+    },
+    {
+      "service": "Electrical stimulation (unattended)",
+      "codes": ["97014"]
+    },
+    {
+      "service": "Hot/cold packs",
+      "codes": ["97010"]
+    },
+    {
+      "service": "Group therapy",
+      "codes": ["97150"]
+    }
+  ],
+  "time-based": [
+    {
+      "service": "Electrical stimulation (manual)",
+      "codes": ["97032"]
+    },
+    {
+      "service": "Ultrasound",
+      "codes": ["97035"]
+    },
+    {
+      "service": "Gait training",
+      "codes": ["97116"]
+    },
+    {
+      "service": "Therapeutic exercise",
+      "codes": ["97110"]
+    },
+    {
+      "service": "Manual therapy",
+      "codes": ["97140"]
+    },
+    {
+      "service": "Neuromuscular re-education",
+      "codes": ["97112"]
+    },
+    {
+      "service": "Self-care/home management training",
+      "codes": ["97535"]
+    },
+    {
+      "service": "Prosthetic training",
+      "codes": ["97761"]
+    },
+    {
+      "service": "Physical performance test or measurement",
+      "codes": ["97750"]
+    }
+  ]
+}
