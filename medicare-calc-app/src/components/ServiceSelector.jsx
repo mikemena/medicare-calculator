@@ -9,6 +9,8 @@ function ServiceSelector() {
   });
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [selectedValues, setSelectedValues] = useState({});
+  const [calculationResults, setCalculationResults] = useState('');
+  const [method, setMethod] = useState('CMS');
 
   useEffect(() => {
     // Initialize selected values state for each service
@@ -63,18 +65,63 @@ function ServiceSelector() {
     0
   );
 
-  const handleSubmit = () => {
-    // Example submit function that checks all time-based services have minutes entered
-    const allTimeBasedHaveMinutes = selectedServices['time-based'].every(
-      (service) => service.minutes > 0
-    );
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
 
-    if (!allTimeBasedHaveMinutes) {
-      setAttemptedSubmit(true); // This will trigger the display of validation messages
-      return; // Prevent the form from submitting
+    let totalUnits = selectedServices['service-based'].length; // Start with service-based units
+    let detailedResults = [];
+    let remainderMinutesTotal = 0;
+
+    if (method === 'CMS') {
+      selectedServices['time-based'].forEach((service) => {
+        const units = Math.floor(service.minutes / 15);
+        const remainderMinutes = service.minutes % 15;
+        remainderMinutesTotal += remainderMinutes;
+
+        detailedResults.push({ code: service.code, units, remainderMinutes });
+        totalUnits += units;
+      });
+
+      // Round up using remainder minutes if possible
+      detailedResults = detailedResults.map((result) => {
+        if (
+          remainderMinutesTotal >= 15 - result.remainderMinutes &&
+          result.remainderMinutes > 0
+        ) {
+          remainderMinutesTotal -= 15 - result.remainderMinutes;
+          result.units += 1;
+          totalUnits += 1;
+          result.remainderMinutes = 0; // This service is now fully used
+        }
+        return result;
+      });
+
+      // Apply 8-minute rule for any remaining minutes
+      detailedResults.forEach((result) => {
+        if (result.remainderMinutes >= 8) {
+          totalUnits += 1;
+          result.units += 1;
+          result.remainderMinutes = 0; // This service is now fully used
+        }
+      });
+    } else if (method === 'AMA') {
+      // AMA method calculation (Rule of Eights)
+      selectedServices['time-based'].forEach((service) => {
+        const units = Math.floor(service.minutes / 8);
+        if (units > 0) {
+          detailedResults.push({ code: service.code, units }); // Each qualifying service is 1 unit
+          totalUnits += units;
+        }
+      });
     }
 
-    // Proceed with form submission logic...
+    // Prepare the results for display
+    const resultsString =
+      detailedResults
+        .map((result) => `${result.code}: ${result.units} unit(s)`)
+        .join(', ') + ` Total units: ${totalUnits}`;
+
+    setCalculationResults(resultsString);
   };
 
   const handleClearAll = () => {
@@ -88,10 +135,26 @@ function ServiceSelector() {
       resetValues[key] = '';
     });
     setSelectedValues(resetValues);
+    // Clear calculation results
+    setCalculationResults('');
+    // Reset method to default value, e.g., 'CMS'
+    setMethod('CMS');
   };
 
   return (
     <div className="service-selector-container">
+      <h2>Select Calculation Method</h2>
+      <div className="method-selector">
+        <label htmlFor="method">Method</label>
+        <select
+          id="method"
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
+        >
+          <option value="CMS">CMS</option>
+          <option value="AMA">AMA</option>
+        </select>
+      </div>
       <h2>Select Services</h2>
       {Object.keys(servicesData).map((category) => (
         <div key={category} className="service-category">
@@ -156,9 +219,13 @@ function ServiceSelector() {
       {totalSelectedServices === 0 && (
         <p className="no-services-selected">No services selected</p>
       )}
-      <button className="submit-btn" type="submit">
+      <button className="calculate-btn" type="submit" onClick={handleSubmit}>
         Calculate
       </button>
+      <div className="calculation-results">
+        <h3>Calculation Results</h3>
+        <p className="calculation-result-text">{calculationResults}</p>
+      </div>
     </div>
   );
 }
