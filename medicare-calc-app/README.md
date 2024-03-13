@@ -1,8 +1,5 @@
-# React + Vite
+# Medicare Calculator App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## The app aims to help therapists accurately track and calculate billable units for Medicare patients' treatment sessions, ensuring compliance with the 8-minute rule set by the Centers for Medicare and Medicaid Services (CMS). The 8-minute rule requires therapists to document and bill in increments of 8 minutes for rehabilitation services provided to Medicare patients.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## The calculator app would allow therapists to input the total duration of a treatment session and automatically calculate the appropriate billable units based on the 8-minute rule. This would help prevent potential fraud or abuse of services by accurately reflecting the time spent on each intervention, ensuring proper reimbursement from Medicare.
