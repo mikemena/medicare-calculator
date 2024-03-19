@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import servicesData from '../cptCodes.json';
+import { RiDeleteBack2Fill } from 'react-icons/ri';
+
 import './ServiceSelector.css';
 
 function ServiceSelector() {
@@ -36,9 +38,13 @@ function ServiceSelector() {
   };
 
   const handleRemoveService = (code) => {
-    setSelectedServices((prevServices) =>
-      prevServices.filter((s) => s.code !== code)
-    );
+    console.log('code', code);
+    console.log('Before removal:', selectedServices);
+    setSelectedServices((prevServices) => {
+      const filteredServices = prevServices.filter((s) => s.code !== code);
+      console.log('After removal:', filteredServices);
+      return filteredServices;
+    });
   };
 
   const handleMinutesChange = (code, minutes) => {
@@ -55,13 +61,22 @@ function ServiceSelector() {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
+    console.log('Selected services:', selectedServices);
 
-    let totalUnits = selectedServices['service-based'].length; // Start with service-based units
+    // Filter out service-based and time-based services
+    const serviceBasedServices = selectedServices.filter(
+      (service) => service.category === 'serviceBased'
+    );
+    const timeBasedServices = selectedServices.filter(
+      (service) => service.category === 'timeBased'
+    );
+
+    let totalUnits = serviceBasedServices.length; // Start with service-based units
     let detailedResults = [];
     let remainderMinutesTotal = 0;
 
     if (method === 'CMS') {
-      selectedServices['time-based'].forEach((service) => {
+      timeBasedServices.forEach((service) => {
         const units = Math.floor(service.minutes / 15);
         const remainderMinutes = service.minutes % 15;
         remainderMinutesTotal += remainderMinutes;
@@ -94,7 +109,7 @@ function ServiceSelector() {
       });
     } else if (method === 'AMA') {
       // AMA method calculation (Rule of Eights)
-      selectedServices['time-based'].forEach((service) => {
+      timeBasedServices.forEach((service) => {
         const units = Math.floor(service.minutes / 8);
         if (units > 0) {
           detailedResults.push({ code: service.code, units }); // Each qualifying service is 1 unit
@@ -120,6 +135,24 @@ function ServiceSelector() {
     // Reset method to default value, e.g., 'CMS'
     setMethod('CMS');
   };
+
+  function formatCategory(category) {
+    return (
+      category
+        // Split the string into words based on camelCase
+        .replace(/([A-Z])/g, ' $1')
+        // Trim any extra space that may appear at the start
+        .trim()
+        // Replace any space with a hyphen
+        .replace(/\s+/g, '-')
+        // Capitalize the first letter of each word
+        .split('-')
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join('-')
+    );
+  }
 
   return (
     <div className="service-selector-container">
@@ -162,15 +195,15 @@ function ServiceSelector() {
       </select>
       {/* Section for displaying selected services */}
       <div className="selected-services">
-        {selectedServices.map((item, index) => (
-          <div key={index} className="service-list-item">
+        {selectedServices.map((item) => (
+          <div key={item.code} className="service-list-item">
             <button
               className="remove-service-btn"
               onClick={() => handleRemoveService(item.code)}
             >
-              Remove
+              <RiDeleteBack2Fill size={20} />
             </button>
-            <span>{`${item.category.replace(/-/g, ' ').toUpperCase()} - ${item.service}: ${item.code}`}</span>
+            <span>{`${formatCategory(item.category)} - ${item.service}: ${item.code}`}</span>
             {item.category === 'time-based' && (
               <input
                 type="number"
@@ -199,7 +232,7 @@ function ServiceSelector() {
 
       {totalSelectedServices > 0 && (
         <button className="clear-all-btn" onClick={handleClearAll}>
-          Clear All
+          Reset
         </button>
       )}
       {totalSelectedServices === 0 && (
@@ -209,7 +242,7 @@ function ServiceSelector() {
         Calculate
       </button>
       <div className="calculation-results">
-        <h3>Calculation Results</h3>
+        {/* <h3>Calculation Results</h3> */}
         <p className="calculation-result-text">{calculationResults}</p>
       </div>
     </div>
