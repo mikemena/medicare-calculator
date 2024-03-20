@@ -2,21 +2,20 @@
   max-width: 600px;
   margin: auto;
   padding: 10px;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .charge-container__method-selector {
-  margin-top: 5px;
-  margin-bottom: 5px;
+  box-sizing: border-box;
   padding: 8px;
   width: 100%;
   border-radius: 4px;
   border: 1px solid #ccc;
+  margin: auto;
 }
 
 .charge-container__charge-selector {
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin: auto;
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -30,8 +29,6 @@
 }
 
 .charge-container__selected-services-item {
-  padding: 0px;
-  margin-bottom: 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,14 +42,13 @@
   color: rgb(183, 68, 68);
   border: none;
   cursor: pointer;
-
   order: -1;
 }
 
 .charge-container__minutes-input {
   align-self: flex-end;
-  margin: 10px;
   width: 65px;
+  margin-left: 10px;
 }
 
 .charge-container__remove-btn:hover {
@@ -60,7 +56,7 @@
   color: rgb(234, 54, 54);
 }
 
-.charge-container__clear-btn {
+.charge-container__reset-btn {
   width: 100%;
   height: 35px;
   background-color: #4692be;
@@ -73,11 +69,12 @@
   margin-left: 10px;
 }
 
-.charge-container__clear-btn:hover {
+.charge-container__reset-btn:hover {
   background-color: #6bbee4;
 }
 
 .charge-container__calculate-btn {
+  box-sizing: border-box;
   width: 100%;
   padding: 10px;
   margin: 10px;
@@ -92,4 +89,39 @@
   font-size: 20px;
   font-weight: bold;
   color: #007bff;
+}
+
+@media only screen and (max-width: 768px) {
+  .charge-container {
+    padding: 10px; /* Slightly increased padding for better spacing */
+  }
+
+  .charge-container__method-selector,
+  .charge-container__charge-selector,
+  .charge-container__reset-btn,
+  .charge-container__calculate-btn {
+    width: 100%;
+    margin: auto; /* Center-align if max-width is less than 100% */
+  }
+
+  .charge-container__calculate-btn {
+    margin: 10px 0; /* Adjusted margin for better spacing */
+  }
+
+  .charge-container h2 {
+    font-size: 18px; /* Adjusted font size for better readability */
+    padding-bottom: 5px; /* Reduced padding for compactness */
+    border-bottom: 1px solid #eaeaea; /* Restored border with reduced thickness */
+  }
+
+  .charge-details,
+  .charge-container__calculation-result-text {
+    font-size: 16px;
+  }
+
+  .charge-container__remove-btn,
+  .charge-container__reset-btn,
+  .charge-container__calculate-btn {
+    padding: 12px 10px 12px 0;
+  }
 }

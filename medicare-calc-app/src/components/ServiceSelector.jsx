@@ -127,7 +127,7 @@ function ServiceSelector() {
     setCalculationResults(resultsString);
   };
 
-  const handleClearAll = () => {
+  const handleReset = () => {
     setSelectedOption('');
     setSelectedServices([]);
     // Clear calculation results
@@ -207,10 +207,7 @@ function ServiceSelector() {
       </div>
 
       {totalSelectedServices > 0 && (
-        <button
-          className="charge-container__clear-btn"
-          onClick={handleClearAll}
-        >
+        <button className="charge-container__reset-btn" onClick={handleReset}>
           Reset
         </button>
       )}

@@ -8,7 +8,7 @@
 
 .app-title {
   font-family: 'Roboto', sans-serif;
-  color: rgb(63, 63, 63);
+  color: #575555;
   font-weight: 400;
   font-style: normal;
   text-align: center;
@@ -37,11 +37,13 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
-.minutes-input {
-  margin-left: 10px;
-  width: 65px;
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .app-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .calculator-container {
+    padding: 0px;
+  }
 }
