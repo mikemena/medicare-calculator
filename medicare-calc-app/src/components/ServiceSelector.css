@@ -37,12 +37,9 @@
   justify-content: space-between;
 }
 
-.charge-container__minutes-input {
-  justify-content: flex-end;
-  margin: 10px;
-  width: 65px;
+.charge-details {
+  flex: 1;
 }
-
 .charge-container__remove-btn {
   background: none;
   color: rgb(183, 68, 68);
@@ -50,6 +47,12 @@
   cursor: pointer;
 
   order: -1;
+}
+
+.charge-container__minutes-input {
+  align-self: flex-end;
+  margin: 10px;
+  width: 65px;
 }
 
 .charge-container__remove-btn:hover {
