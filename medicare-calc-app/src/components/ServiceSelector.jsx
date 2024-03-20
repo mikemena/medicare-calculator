@@ -136,41 +136,22 @@ function ServiceSelector() {
     setMethod('CMS');
   };
 
-  function formatCategory(category) {
-    return (
-      category
-        // Split the string into words based on camelCase
-        .replace(/([A-Z])/g, ' $1')
-        // Trim any extra space that may appear at the start
-        .trim()
-        // Replace any space with a hyphen
-        .replace(/\s+/g, '-')
-        // Capitalize the first letter of each word
-        .split('-')
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('-')
-    );
-  }
-
   return (
-    <div className="service-selector-container">
+    <div className="charge-container">
       <h2>Select Calculation Method</h2>
-      <div className="method-selector">
-        <label htmlFor="method">Method</label>
-        <select
-          id="method"
-          value={method}
-          onChange={(e) => setMethod(e.target.value)}
-        >
-          <option value="CMS">CMS</option>
-          <option value="AMA">AMA</option>
-        </select>
-      </div>
+
+      <select
+        className="charge-container__method-selector"
+        value={method}
+        onChange={(e) => setMethod(e.target.value)}
+      >
+        <option value="CMS">CMS</option>
+        <option value="AMA">AMA</option>
+      </select>
+
       <h2>Select Charge</h2>
       <select
-        className="service-dropdown"
+        className="charge-container__charge-selector"
         value={selectedOption}
         onChange={handleDropdownChange}
       >
@@ -194,56 +175,61 @@ function ServiceSelector() {
         ))}
       </select>
       {/* Section for displaying selected services */}
-      <div className="selected-services">
+      <div className="charge-container__selected-services">
         {selectedServices.map((item) => (
-          <div key={item.code} className="service-list-item">
+          <div
+            key={item.code}
+            className="charge-container__selected-services-item"
+          >
             <button
-              className="remove-service-btn"
+              className="charge-container__remove-btn"
               onClick={() => handleRemoveService(item.code)}
             >
               <RiDeleteBack2Fill size={20} />
             </button>
-            <span>{`${formatCategory(item.category)} - ${item.service}: ${item.code}`}</span>
-            {item.category === 'time-based' && (
-              <input
-                type="number"
-                value={item.minutes}
-                onChange={(e) => handleMinutesChange(item.code, e.target.value)}
-                placeholder="Minutes"
-                min="0"
-              />
-            )}
+            <div className="charge-details">{`${item.service}: ${item.code}`}</div>
 
             {item.category === 'timeBased' && (
-              <input
-                type="number"
-                className="minutes-input"
-                placeholder="Minutes"
-                value={item.minutes === 0 ? '' : item.minutes}
-                onChange={(e) =>
-                  handleMinutesChange('time-based', item.code, e.target.value)
-                }
-                min="0"
-              />
+              <div className="charge-container__minutes-input_container">
+                <input
+                  type="number"
+                  className="charge-container__minutes-input"
+                  placeholder="Minutes"
+                  value={item.minutes === 0 ? '' : item.minutes}
+                  onChange={(e) =>
+                    handleMinutesChange('time-based', item.code, e.target.value)
+                  }
+                  min="0"
+                />
+              </div>
             )}
           </div>
         ))}
       </div>
 
       {totalSelectedServices > 0 && (
-        <button className="clear-all-btn" onClick={handleClearAll}>
+        <button
+          className="charge-container__clear-btn"
+          onClick={handleClearAll}
+        >
           Reset
         </button>
       )}
       {totalSelectedServices === 0 && (
         <p className="no-services-selected">No services selected</p>
       )}
-      <button className="calculate-btn" type="submit" onClick={handleSubmit}>
+      <button
+        className="charge-container__calculate-btn"
+        type="submit"
+        onClick={handleSubmit}
+      >
         Calculate
       </button>
-      <div className="calculation-results">
+      <div className="charge-container__calculation-results">
         {/* <h3>Calculation Results</h3> */}
-        <p className="calculation-result-text">{calculationResults}</p>
+        <p className="charge-container__calculation-result-text">
+          {calculationResults}
+        </p>
       </div>
     </div>
   );
