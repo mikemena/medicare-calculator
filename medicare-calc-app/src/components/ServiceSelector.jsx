@@ -65,23 +65,58 @@ function ServiceSelector() {
     const timeBasedServices = selectedServices.filter(
       (service) => service.category === 'Time Based'
     );
-    let newTotalMinutes = timeBasedServices.reduce(
-      (total, service) => total + service.minutes,
-      0
-    );
-    let newTotalUnits = selectedServices.length; // Starting with the count of service-based services
 
+    // The CMS method requires adding up all the minutes first.
     if (method === 'CMS') {
-      // CMS-specific calculations here
-      // Remember to include logic for the 8-minute rule and 15-minute intervals
+      const totalTimedMinutes = timeBasedServices.reduce(
+        (total, service) => total + service.minutes,
+        0
+      );
+      const unitsFromTimedServices = Math.floor(totalTimedMinutes / 15);
+      let remainderMinutes = totalTimedMinutes % 15;
+
+      // Mixed remainders and the 8-minute rule for CMS
+      const sortedServicesByMinutes = [...timeBasedServices].sort(
+        (a, b) => b.minutes - a.minutes
+      );
+      let totalUnits = unitsFromTimedServices;
+
+      for (const service of sortedServicesByMinutes) {
+        if (service.minutes % 15 >= 8) {
+          totalUnits += 1; // One unit for each service that has at least 8 mins leftover.
+          remainderMinutes -= service.minutes % 15;
+        }
+      }
+
+      // If remainder minutes are still 8 or more after accounting for individual services, add one more unit.
+      if (remainderMinutes >= 8) {
+        totalUnits += 1;
+      }
+
+      setTotalUnits(
+        totalUnits +
+          selectedServices.filter(
+            (service) => service.category === 'Service Based'
+          ).length
+      );
     } else if (method === 'AMA') {
-      // AMA-specific calculations here
-      // Typically involves the 8-minute rule
+      // The AMA Rule of Eights looks at each service individually.
+      let totalUnits = timeBasedServices.reduce((units, service) => {
+        const serviceUnits = Math.floor(service.minutes / 15);
+        return units + serviceUnits + (service.minutes % 15 >= 8 ? 1 : 0);
+      }, 0);
+
+      setTotalUnits(
+        totalUnits +
+          selectedServices.filter(
+            (service) => service.category === 'Service Based'
+          ).length
+      );
     }
 
-    // Update state with new totals
-    setTotalMinutes(newTotalMinutes);
-    setTotalUnits(newTotalUnits);
+    setTotalMinutes(
+      timeBasedServices.reduce((total, service) => total + service.minutes, 0)
+    );
   };
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes

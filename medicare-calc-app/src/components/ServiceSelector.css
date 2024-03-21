@@ -138,11 +138,11 @@
   text-align: right;
 }
 .charge-container__total-minutes {
-  margin-right: 50px;
+  margin-right: 60px;
 }
 
 .charge-container__total-units {
-  margin-right: 30px;
+  margin-right: 25px;
 }
 
 @media only screen and (max-width: 768px) {
