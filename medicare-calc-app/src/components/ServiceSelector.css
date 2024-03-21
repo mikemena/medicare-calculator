@@ -32,15 +32,12 @@
   column-gap: 10px; /* Add some gap between columns */
   row-gap: 10px; /* Add some gap between rows */
   align-items: start; /* Align items to the top */
-  border: 1px solid #ddd; /* Add a border for better visibility */
   padding: 10px; /* Add some padding */
 }
 
 .charge-container__selected-services-header {
   font-weight: bold;
-  background-color: #f0f0f0;
   padding: 10px;
-  border: 1px solid #ddd; /* Add a border for better visibility */
   text-align: center; /* Center the text */
 }
 
@@ -48,23 +45,29 @@
   display: contents;
 }
 
+.charge-container__no-minutes {
+  text-align: center;
+  margin: 20px;
+}
+
 .charge-container__minutes-input {
   width: 65px;
-  margin-left: 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--red);
 }
 .charge-details,
 .charge-container__minutes-input,
-.charge-container__units-display {
-  padding: 8px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  text-align: center; /* Center the text */
+.charge-container__units-display,
+.charge-container__minutes-input_container {
+  padding: 5px;
 }
 
 .charge-container__units-display {
-  margin-left: 10px;
   font-size: 20px;
   color: var(--blue);
+  text-align: center;
+  padding-bottom: 10px;
+  margin-top: 15px;
 }
 
 .charge-container__remove-btn {

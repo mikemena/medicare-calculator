@@ -199,7 +199,7 @@ function ServiceSelector() {
 
               {`${item.code} - ${item.service} `}
             </div>
-            {item.category === 'timeBased' && (
+            {item.category === 'timeBased' ? (
               <div className="charge-container__minutes-input_container">
                 <input
                   type="number"
@@ -207,16 +207,16 @@ function ServiceSelector() {
                   placeholder="Minutes"
                   value={item.minutes === 0 ? '' : item.minutes}
                   onChange={(e) =>
-                    handleMinutesChange('time-based', item.code, e.target.value)
+                    handleMinutesChange(item.code, e.target.value)
                   }
                   min="0"
                 />
               </div>
+            ) : (
+              <p className="charge-container__no-minutes">N/A</p>
             )}
-            <div>
-              <div className="charge-container__units-display">
-                {Math.ceil(item.minutes / 15)}
-              </div>
+            <div className="charge-container__units-display">
+              {Math.ceil(item.minutes / 15)}
             </div>
           </div>
         ))}
