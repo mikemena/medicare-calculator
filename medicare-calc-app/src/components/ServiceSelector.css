@@ -39,6 +39,7 @@
   font-weight: bold;
   padding: 10px;
   text-align: center; /* Center the text */
+  color: var(--blue);
 }
 
 .charge-container__selected-services-item {
@@ -51,10 +52,11 @@
 }
 
 .charge-container__minutes-input {
-  width: 65px;
+  width: 55px;
   text-align: center;
-  border-bottom: 1px solid var(--red);
+  margin-top: 10px;
 }
+
 .charge-details,
 .charge-container__minutes-input,
 .charge-container__units-display,

@@ -204,7 +204,7 @@ function ServiceSelector() {
                 <input
                   type="number"
                   className="charge-container__minutes-input"
-                  placeholder="Minutes"
+                  placeholder="0"
                   value={item.minutes === 0 ? '' : item.minutes}
                   onChange={(e) =>
                     handleMinutesChange(item.code, e.target.value)
@@ -230,7 +230,7 @@ function ServiceSelector() {
         </>
       )}
       {totalSelectedServices === 0 && (
-        <p className="no-services-selected">No services selected</p>
+        <p className="no-services-selected">No charges selected</p>
       )}
       <button
         className="charge-container__calculate-btn"
