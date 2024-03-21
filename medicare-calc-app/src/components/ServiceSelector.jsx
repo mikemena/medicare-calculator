@@ -218,7 +218,13 @@ function ServiceSelector() {
           </div>
         ))}
       </div>
-
+      <div>
+        <div className="charge-container__total-section">
+          <p>Total</p>
+          <p className="charge-container__total-minutes">0</p>
+          <p className="charge-container__total-units">0</p>
+        </div>
+      </div>
       {totalSelectedServices > 0 && (
         <>
           <button className="charge-container__reset-btn" onClick={handleReset}>
