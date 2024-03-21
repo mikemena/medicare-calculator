@@ -1,6 +1,6 @@
 :root {
-  --red: rgb(221, 26, 54);
-  --blue: rgb(12, 22, 93);
+  --red: rgba(228, 54, 80, 0.936);
+  --blue: rgba(25, 32, 82, 0.829);
 }
 
 .calculator-container {

@@ -202,6 +202,11 @@ function ServiceSelector() {
                 />
               </div>
             )}
+            <div>
+              <div className="charge-container__units-display">
+                {Math.ceil(item.minutes / 15)}
+              </div>
+            </div>
           </div>
         ))}
       </div>

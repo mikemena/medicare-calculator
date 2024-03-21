@@ -11,7 +11,6 @@
   width: 100%;
   border-radius: 4px;
   border: 1px solid #ccc;
-  margin: auto;
 }
 
 .charge-container__charge-selector {
@@ -26,6 +25,9 @@
   color: var(--blue);
   border-bottom: 2px solid #eaeaea;
   padding-bottom: 10px;
+}
+.charge-container__selected-services {
+  margin-top: 10px;
 }
 
 .charge-container__selected-services-item {
@@ -51,6 +53,15 @@
   margin-left: 10px;
 }
 
+.charge-container__units-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 10px;
+  font-size: 20px;
+  color: var(--blue);
+}
+
 .charge-container__remove-btn:hover {
   background: none;
   color: rgb(234, 54, 54);
@@ -71,7 +82,7 @@
 }
 
 .charge-container__reset-btn:hover {
-  background-color: #3c4279;
+  background-color: #1e467d;
 }
 
 .charge-container__calculate-btn {
@@ -84,7 +95,7 @@
 }
 
 .charge-container__calculate-btn:hover {
-  background-color: #b22a2a;
+  background-color: #b53333;
 }
 
 @media only screen and (max-width: 768px) {
