@@ -1,3 +1,8 @@
+:root {
+  --red: rgb(221, 26, 54);
+  --blue: rgb(12, 22, 93);
+}
+
 .calculator-container {
   max-width: 700px;
   margin: auto;
@@ -8,7 +13,7 @@
 
 .app-title {
   font-family: 'Roboto', sans-serif;
-  color: #575555;
+  color: var(--red);
   font-weight: 400;
   font-style: normal;
   text-align: center;
@@ -29,7 +34,6 @@ input[type='number'] {
 
 button {
   padding: 10px;
-  background-color: #007bff;
   font-size: 14px;
   color: white;
   border: none;

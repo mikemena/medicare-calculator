@@ -187,7 +187,7 @@ function ServiceSelector() {
             >
               <RiDeleteBack2Fill size={20} />
             </button>
-            <div className="charge-details">{`${item.service}: ${item.code}`}</div>
+            <div className="charge-details">{`${item.code} - ${item.service}`}</div>
             {item.category === 'timeBased' && (
               <div className="charge-container__minutes-input_container">
                 <input
