@@ -1,5 +1,5 @@
 {
-  "serviceBased": [
+  "Service Based": [
     {
       "service": "PT evaluation",
       "codes": ["97161", "97162", "97163"]
@@ -21,7 +21,7 @@
       "codes": ["97150"]
     }
   ],
-  "timeBased": [
+  "Time Based": [
     {
       "service": "Electrical stimulation (manual)",
       "codes": ["97032"]

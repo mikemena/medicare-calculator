@@ -15,7 +15,7 @@ function ServiceSelector() {
     console.log('Selected:', value);
     setSelectedOption(value);
     if (value) {
-      const [category, service, code] = value.split('-');
+      const [category, service, code] = value.split('::');
       handleAddService(category, service, code);
       setSelectedOption(''); // Reset for the next selection
     }
@@ -157,17 +157,14 @@ function ServiceSelector() {
       >
         <option value="">Select Charge</option>
         {Object.entries(servicesData).map(([category, services]) => (
-          <optgroup
-            label={category.replace(/-/g, ' ').toUpperCase()}
-            key={category}
-          >
+          <optgroup label={category.toUpperCase()} key={category}>
             {services.map((service) =>
               service.codes.map((code) => (
                 <option
-                  key={`${category}-${service.service}-${code}`}
-                  value={`${category}-${service.service}-${code}`}
+                  key={`${category}::${service.service}::${code}`}
+                  value={`${category}::${service.service}::${code}`}
                 >
-                  {service.service} - {code}
+                  {code} - {service.service}
                 </option>
               ))
             )}
@@ -199,7 +196,7 @@ function ServiceSelector() {
 
               {`${item.code} - ${item.service} `}
             </div>
-            {item.category === 'timeBased' ? (
+            {item.category === 'Time Based' ? (
               <div className="charge-container__minutes-input_container">
                 <input
                   type="number"
