@@ -176,18 +176,29 @@ function ServiceSelector() {
       </select>
       {/* Section for displaying selected services */}
       <div className="charge-container__selected-services">
+        <div className="charge-container__selected-services-header">
+          Charges
+        </div>
+        <div className="charge-container__selected-services-header">
+          Minutes
+        </div>
+        <div className="charge-container__selected-services-header">Units</div>
+
         {selectedServices.map((item) => (
           <div
             key={item.code}
             className="charge-container__selected-services-item"
           >
-            <button
-              className="charge-container__remove-btn"
-              onClick={() => handleRemoveService(item.code)}
-            >
-              <RiDeleteBack2Fill size={20} />
-            </button>
-            <div className="charge-details">{`${item.code} - ${item.service} `}</div>
+            <div className="charge-details">
+              <button
+                className="charge-container__remove-btn"
+                onClick={() => handleRemoveService(item.code)}
+              >
+                <RiDeleteBack2Fill size={20} />
+              </button>
+
+              {`${item.code} - ${item.service} `}
+            </div>
             {item.category === 'timeBased' && (
               <div className="charge-container__minutes-input_container">
                 <input
@@ -212,9 +223,11 @@ function ServiceSelector() {
       </div>
 
       {totalSelectedServices > 0 && (
-        <button className="charge-container__reset-btn" onClick={handleReset}>
-          Reset
-        </button>
+        <>
+          <button className="charge-container__reset-btn" onClick={handleReset}>
+            Reset
+          </button>
+        </>
       )}
       {totalSelectedServices === 0 && (
         <p className="no-services-selected">No services selected</p>

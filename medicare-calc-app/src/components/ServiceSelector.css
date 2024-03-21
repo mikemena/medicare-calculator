@@ -27,39 +27,52 @@
   padding-bottom: 10px;
 }
 .charge-container__selected-services {
-  margin-top: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr 1fr; /* Define four columns */
+  column-gap: 10px; /* Add some gap between columns */
+  row-gap: 10px; /* Add some gap between rows */
+  align-items: start; /* Align items to the top */
+  border: 1px solid #ddd; /* Add a border for better visibility */
+  padding: 10px; /* Add some padding */
+}
+
+.charge-container__selected-services-header {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border: 1px solid #ddd; /* Add a border for better visibility */
+  text-align: center; /* Center the text */
 }
 
 .charge-container__selected-services-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: contents;
 }
 
-.charge-details {
-  flex: 1;
+.charge-container__minutes-input {
+  width: 65px;
+  margin-left: 10px;
 }
+.charge-details,
+.charge-container__minutes-input,
+.charge-container__units-display {
+  padding: 8px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  text-align: center; /* Center the text */
+}
+
+.charge-container__units-display {
+  margin-left: 10px;
+  font-size: 20px;
+  color: var(--blue);
+}
+
 .charge-container__remove-btn {
   background: none;
   color: var(--red);
   border: none;
   cursor: pointer;
   order: -1;
-}
-
-.charge-container__minutes-input {
-  align-self: flex-end;
-  width: 65px;
-  margin-left: 10px;
-}
-
-.charge-container__units-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-left: 10px;
-  font-size: 20px;
-  color: var(--blue);
 }
 
 .charge-container__remove-btn:hover {
