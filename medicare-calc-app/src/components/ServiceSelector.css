@@ -28,7 +28,7 @@
 }
 .charge-container__selected-services {
   display: grid;
-  grid-template-columns: auto 1fr 1fr; /* Define four columns */
+  grid-template-columns: auto 1fr auto; /* Define four columns */
   column-gap: 10px; /* Add some gap between columns */
   row-gap: 10px; /* Add some gap between rows */
   align-items: start; /* Align items to the top */
@@ -117,13 +117,32 @@
 }
 
 .charge-container__total-section {
-  display: flex;
-  justify-content: space-between;
-
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* Match the columns to the above */
   align-items: center;
   padding: 10px;
   margin-top: 10px;
   border-top: 1px solid #eaeaea;
+}
+
+.charge-container__total-title {
+  font-size: 20px;
+  color: var(--blue);
+  grid-column: 1;
+}
+
+.charge-container__total-minutes,
+.charge-container__total-units {
+  font-size: 20px;
+  color: var(--blue);
+  text-align: right;
+}
+.charge-container__total-minutes {
+  margin-right: 50px;
+}
+
+.charge-container__total-units {
+  margin-right: 30px;
 }
 
 @media only screen and (max-width: 768px) {

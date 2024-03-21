@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import servicesData from '../cptCodes.json';
 import { RiDeleteBack2Fill } from 'react-icons/ri';
 
@@ -9,6 +9,8 @@ function ServiceSelector() {
   const [calculationResults, setCalculationResults] = useState('');
   const [method, setMethod] = useState('CMS');
   const [selectedOption, setSelectedOption] = useState('');
+  const [totalMinutes, setTotalMinutes] = useState(0);
+  const [totalUnits, setTotalUnits] = useState(0);
 
   const handleDropdownChange = (e) => {
     const value = e.target.value;
@@ -59,73 +61,33 @@ function ServiceSelector() {
 
   const totalSelectedServices = selectedServices.length;
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-    console.log('Selected services:', selectedServices);
-
-    // Filter out service-based and time-based services
-    const serviceBasedServices = selectedServices.filter(
-      (service) => service.category === 'serviceBased'
-    );
+  const calculateTotals = () => {
     const timeBasedServices = selectedServices.filter(
-      (service) => service.category === 'timeBased'
+      (service) => service.category === 'Time Based'
     );
-
-    let totalUnits = serviceBasedServices.length; // Start with service-based units
-    let detailedResults = [];
-    let remainderMinutesTotal = 0;
+    let newTotalMinutes = timeBasedServices.reduce(
+      (total, service) => total + service.minutes,
+      0
+    );
+    let newTotalUnits = selectedServices.length; // Starting with the count of service-based services
 
     if (method === 'CMS') {
-      timeBasedServices.forEach((service) => {
-        const units = Math.floor(service.minutes / 15);
-        const remainderMinutes = service.minutes % 15;
-        remainderMinutesTotal += remainderMinutes;
-
-        detailedResults.push({ code: service.code, units, remainderMinutes });
-        totalUnits += units;
-      });
-
-      // Round up using remainder minutes if possible
-      detailedResults = detailedResults.map((result) => {
-        if (
-          remainderMinutesTotal >= 15 - result.remainderMinutes &&
-          result.remainderMinutes > 0
-        ) {
-          remainderMinutesTotal -= 15 - result.remainderMinutes;
-          result.units += 1;
-          totalUnits += 1;
-          result.remainderMinutes = 0; // This service is now fully used
-        }
-        return result;
-      });
-
-      // Apply 8-minute rule for any remaining minutes
-      detailedResults.forEach((result) => {
-        if (result.remainderMinutes >= 8) {
-          totalUnits += 1;
-          result.units += 1;
-          result.remainderMinutes = 0; // This service is now fully used
-        }
-      });
+      // CMS-specific calculations here
+      // Remember to include logic for the 8-minute rule and 15-minute intervals
     } else if (method === 'AMA') {
-      // AMA method calculation (Rule of Eights)
-      timeBasedServices.forEach((service) => {
-        const units = Math.floor(service.minutes / 8);
-        if (units > 0) {
-          detailedResults.push({ code: service.code, units }); // Each qualifying service is 1 unit
-          totalUnits += units;
-        }
-      });
+      // AMA-specific calculations here
+      // Typically involves the 8-minute rule
     }
 
-    // Prepare the results for display
-    const resultsString =
-      detailedResults
-        .map((result) => `${result.code}: ${result.units} unit(s)`)
-        .join(', ') + ` Total units: ${totalUnits}`;
-
-    setCalculationResults(resultsString);
+    // Update state with new totals
+    setTotalMinutes(newTotalMinutes);
+    setTotalUnits(newTotalUnits);
   };
+
+  // useEffect hook to recalculate totals whenever selectedServices or method changes
+  useEffect(() => {
+    calculateTotals();
+  }, [selectedServices, method]);
 
   const handleReset = () => {
     setSelectedOption('');
@@ -218,15 +180,17 @@ function ServiceSelector() {
           </div>
         ))}
       </div>
-      <div>
-        <div className="charge-container__total-section">
-          <p>Total</p>
-          <p className="charge-container__total-minutes">0</p>
-          <p className="charge-container__total-units">0</p>
-        </div>
-      </div>
+
       {totalSelectedServices > 0 && (
         <>
+          {' '}
+          <div>
+            <div className="charge-container__total-section">
+              <p className="charge-container__total-title">Total</p>
+              <p className="charge-container__total-minutes">{totalMinutes}</p>
+              <p className="charge-container__total-units">{totalUnits}</p>
+            </div>
+          </div>
           <button className="charge-container__reset-btn" onClick={handleReset}>
             Reset
           </button>
@@ -235,13 +199,6 @@ function ServiceSelector() {
       {totalSelectedServices === 0 && (
         <p className="no-services-selected">No charges selected</p>
       )}
-      <button
-        className="charge-container__calculate-btn"
-        type="submit"
-        onClick={handleSubmit}
-      >
-        Calculate
-      </button>
     </div>
   );
 }
