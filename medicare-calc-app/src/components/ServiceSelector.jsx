@@ -129,7 +129,15 @@ function ServiceSelector() {
         0
       )
     );
-    setSelectedServices(updatedServices); // Save the updated services with unit calculations
+    //Before calling setSelectedServices, compare updatedServices with selectedServices so that we don't trigger an infinite loop
+    const serviceChanged = updatedServices.some((service, index) => {
+      const originalService = selectedServices[index];
+      return !originalService || service.units !== originalService.units;
+    });
+
+    if (serviceChanged) {
+      setSelectedServices(updatedServices);
+    }
   };
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes
@@ -212,7 +220,7 @@ function ServiceSelector() {
                   type="number"
                   className="charge-container__minutes-input"
                   placeholder="0"
-                  value={item.minutes === 0 ? '' : item.minutes}
+                  value={item.minutes || ''}
                   onChange={(e) =>
                     handleMinutesChange(item.code, e.target.value)
                   }
