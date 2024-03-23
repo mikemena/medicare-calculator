@@ -62,61 +62,74 @@ function ServiceSelector() {
   const totalSelectedServices = selectedServices.length;
 
   const calculateTotals = () => {
-    const timeBasedServices = selectedServices.filter(
-      (service) => service.category === 'Time Based'
-    );
+    const updatedServices = selectedServices.map((service) => {
+      if (service.category === 'Service Based') {
+        // Assign 1 unit for service-based services
+        return { ...service, units: 1 };
+      } else if (service.category === 'Time Based') {
+        // Calculate units for time-based services
+        const serviceUnits = Math.floor(service.minutes / 15);
+        const additionalUnit = service.minutes % 15 >= 8 ? 1 : 0;
+        return { ...service, units: serviceUnits + additionalUnit };
+      }
+      return service;
+    });
 
     // The CMS method requires adding up all the minutes first.
     if (method === 'CMS') {
-      const totalTimedMinutes = timeBasedServices.reduce(
-        (total, service) => total + service.minutes,
+      const totalTimedMinutes = updatedServices.reduce(
+        (total, service) =>
+          service.category === 'Time Based' ? total + service.minutes : total,
         0
       );
-      const unitsFromTimedServices = Math.floor(totalTimedMinutes / 15);
+      let totalUnits = Math.floor(totalTimedMinutes / 15);
       let remainderMinutes = totalTimedMinutes % 15;
 
-      // Mixed remainders and the 8-minute rule for CMS
-      const sortedServicesByMinutes = [...timeBasedServices].sort(
-        (a, b) => b.minutes - a.minutes
-      );
-      let totalUnits = unitsFromTimedServices;
-
-      for (const service of sortedServicesByMinutes) {
-        if (service.minutes % 15 >= 8) {
-          totalUnits += 1; // One unit for each service that has at least 8 mins leftover.
-          remainderMinutes -= service.minutes % 15;
+      // Apply the 8-minute rule for CMS
+      updatedServices.forEach((service) => {
+        if (service.category === 'Time Based' && service.minutes % 15 >= 8) {
+          totalUnits += 1; // Add one unit for each service that has at least 8 mins leftover
         }
-      }
+      });
 
-      // If remainder minutes are still 8 or more after accounting for individual services, add one more unit.
+      // Add one more unit if remainder minutes are still 8 or more
       if (remainderMinutes >= 8) {
         totalUnits += 1;
       }
 
+      // Update the total units including service-based services
       setTotalUnits(
         totalUnits +
-          selectedServices.filter(
+          updatedServices.filter(
             (service) => service.category === 'Service Based'
           ).length
       );
     } else if (method === 'AMA') {
-      // The AMA Rule of Eights looks at each service individually.
-      let totalUnits = timeBasedServices.reduce((units, service) => {
-        const serviceUnits = Math.floor(service.minutes / 15);
-        return units + serviceUnits + (service.minutes % 15 >= 8 ? 1 : 0);
+      // For AMA, calculate the units for each service individually
+      const totalUnits = updatedServices.reduce((units, service) => {
+        return service.category === 'Time Based'
+          ? units + service.units
+          : units;
       }, 0);
 
+      // Include service-based services in the total units
       setTotalUnits(
         totalUnits +
-          selectedServices.filter(
+          updatedServices.filter(
             (service) => service.category === 'Service Based'
           ).length
       );
     }
 
+    // Update the total minutes and selected services
     setTotalMinutes(
-      timeBasedServices.reduce((total, service) => total + service.minutes, 0)
+      updatedServices.reduce(
+        (total, service) =>
+          service.category === 'Time Based' ? total + service.minutes : total,
+        0
+      )
     );
+    setSelectedServices(updatedServices); // Save the updated services with unit calculations
   };
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes
@@ -210,7 +223,8 @@ function ServiceSelector() {
               <p className="charge-container__no-minutes">N/A</p>
             )}
             <div className="charge-container__units-display">
-              {Math.ceil(item.minutes / 15)}
+              {/* {item.category === 'Service Based' ? '1' : item.units} */}
+              {item.units || 0}
             </div>
           </div>
         ))}
