@@ -62,82 +62,66 @@ function ServiceSelector() {
   const totalSelectedServices = selectedServices.length;
 
   const calculateTotals = () => {
+    // First, assign units directly to 'Service Based' services
     const updatedServices = selectedServices.map((service) => {
       if (service.category === 'Service Based') {
-        // Assign 1 unit for service-based services
-        return { ...service, units: 1 };
-      } else if (service.category === 'Time Based') {
-        // Calculate units for time-based services
-        const serviceUnits = Math.floor(service.minutes / 15);
-        const additionalUnit = service.minutes % 15 >= 8 ? 1 : 0;
-        return { ...service, units: serviceUnits + additionalUnit };
+        return { ...service, units: 1 }; // Ensure 'Service Based' services have 1 unit
       }
       return service;
     });
 
-    // The CMS method requires adding up all the minutes first.
-    if (method === 'CMS') {
-      const totalTimedMinutes = updatedServices.reduce(
-        (total, service) =>
-          service.category === 'Time Based' ? total + service.minutes : total,
-        0
-      );
-      let totalUnits = Math.floor(totalTimedMinutes / 15);
-      let remainderMinutes = totalTimedMinutes % 15;
+    // Filter and process 'Time Based' services separately
+    let timeBasedServices = updatedServices.filter(
+      (service) => service.category === 'Time Based'
+    );
 
-      // Apply the 8-minute rule for CMS
-      updatedServices.forEach((service) => {
-        if (service.category === 'Time Based' && service.minutes % 15 >= 8) {
-          totalUnits += 1; // Add one unit for each service that has at least 8 mins leftover
-        }
-      });
+    const totalTimedMinutes = timeBasedServices.reduce(
+      (total, service) => total + service.minutes,
+      0
+    );
+    let totalUnits = Math.floor(totalTimedMinutes / 15);
+    const remainderMinutes = totalTimedMinutes % 15;
 
-      // Add one more unit if remainder minutes are still 8 or more
-      if (remainderMinutes >= 8) {
-        totalUnits += 1;
-      }
-
-      // Update the total units including service-based services
-      setTotalUnits(
-        totalUnits +
-          updatedServices.filter(
-            (service) => service.category === 'Service Based'
-          ).length
-      );
-    } else if (method === 'AMA') {
-      // For AMA, calculate the units for each service individually
-      const totalUnits = updatedServices.reduce((units, service) => {
-        return service.category === 'Time Based'
-          ? units + service.units
-          : units;
-      }, 0);
-
-      // Include service-based services in the total units
-      setTotalUnits(
-        totalUnits +
-          updatedServices.filter(
-            (service) => service.category === 'Service Based'
-          ).length
-      );
+    // Apply the 8-minute rule for the aggregate of remainder minutes
+    if (remainderMinutes >= 8) {
+      totalUnits += 1;
     }
 
-    // Update the total minutes and selected services
-    setTotalMinutes(
-      updatedServices.reduce(
-        (total, service) =>
-          service.category === 'Time Based' ? total + service.minutes : total,
-        0
-      )
-    );
-    //Before calling setSelectedServices, compare updatedServices with selectedServices so that we don't trigger an infinite loop
-    const serviceChanged = updatedServices.some((service, index) => {
-      const originalService = selectedServices[index];
-      return !originalService || service.units !== originalService.units;
+    // Distribute initial units to 'Time Based' services
+    timeBasedServices = timeBasedServices.map((service) => {
+      const unitsFromMinutes = Math.floor(service.minutes / 15);
+      return { ...service, units: unitsFromMinutes };
     });
 
-    if (serviceChanged) {
-      setSelectedServices(updatedServices);
+    const initiallyDistributedUnits = timeBasedServices.reduce(
+      (sum, service) => sum + service.units,
+      0
+    );
+    const remainingUnits = totalUnits - initiallyDistributedUnits;
+
+    // Assign remaining units to the last 'Time Based' service, if applicable
+    if (remainingUnits > 0 && timeBasedServices.length > 0) {
+      const lastServiceIndex = timeBasedServices.length - 1;
+      timeBasedServices[lastServiceIndex].units += remainingUnits;
     }
+
+    // Merge back the 'Time Based' services with their new units
+    const finalServices = updatedServices.map((service) => {
+      const timeBasedService = timeBasedServices.find(
+        (s) => s.code === service.code
+      );
+      return timeBasedService || service;
+    });
+
+    // Update state to reflect the new units distribution and total calculations
+    setSelectedServices(finalServices);
+    setTotalUnits(
+      totalUnits +
+        updatedServices.filter(
+          (service) => service.category === 'Service Based'
+        ).length
+    );
+    setTotalMinutes(totalTimedMinutes);
   };
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes
@@ -243,7 +227,9 @@ function ServiceSelector() {
           {' '}
           <div>
             <div className="charge-container__total-section">
-              <p className="charge-container__total-title">Total</p>
+              <p className="charge-container__total-title">
+                Total Billable Units
+              </p>
               <p className="charge-container__total-minutes">{totalMinutes}</p>
               <p className="charge-container__total-units">{totalUnits}</p>
             </div>
