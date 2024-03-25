@@ -111,6 +111,8 @@ function ServiceSelector() {
 
     // For AMA, apply 8-minute rule individually for each 'Time Based' service
     if (billingMethod === 'AMA') {
+      // Reset totalUnits for AMA billing as we will recalculate it
+      totalUnits = 0;
       timeBasedServices.forEach((service) => {
         if (service.minutes >= 8) {
           service.units = 1;
@@ -119,6 +121,8 @@ function ServiceSelector() {
           service.units = 0;
         }
       });
+      console.log('Billing Method', billingMethod);
+      console.log('AMA totalUnits after 8-minute rule:', totalUnits);
     } else {
       // For CMS or other billing methods, distribute initial units based on 15-minute intervals
       timeBasedServices = timeBasedServices.map((service) => {
@@ -134,6 +138,7 @@ function ServiceSelector() {
 
     // If CMS, distribute remaining units based on the highest remainder minutes
     if (billingMethod === 'CMS') {
+      console.log('Billing Method', billingMethod);
       let remainingUnits =
         totalUnits -
         timeBasedServices.reduce((sum, service) => sum + service.units, 0);
@@ -314,7 +319,7 @@ function ServiceSelector() {
           <button className="charge-container__reset-btn" onClick={handleReset}>
             Reset
           </button>
-          <p className="charge-container__app-version">v1.0</p>
+          <p className="charge-container__app-version">v1.1</p>
         </>
       )}
       {totalSelectedServices === 0 && (
