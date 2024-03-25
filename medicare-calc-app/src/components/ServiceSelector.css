@@ -1,5 +1,5 @@
 .charge-container {
-  max-width: 600px;
+  max-width: 700px;
   margin: auto;
   padding: 10px;
   font-family: 'Roboto', sans-serif;
@@ -29,10 +29,10 @@
 .charge-container__selected-services {
   display: grid;
   grid-template-columns: auto 1fr auto; /* Define four columns */
-  column-gap: 10px; /* Add some gap between columns */
-  row-gap: 10px; /* Add some gap between rows */
-  align-items: start; /* Align items to the top */
-  padding: 10px; /* Add some padding */
+  column-gap: 10px;
+  row-gap: 1px;
+  align-items: start;
+  padding: 5px;
 }
 
 .charge-container__selected-services-header {
@@ -118,7 +118,8 @@
 
 .charge-container__total-section {
   display: grid;
-  grid-template-columns: auto 1fr auto; /* Match the columns to the above */
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
   align-items: center;
   padding: 10px;
   margin-top: 10px;
@@ -128,6 +129,7 @@
 .charge-container__total-title {
   font-size: 20px;
   color: var(--blue);
+  text-align: left;
   grid-column: 1;
 }
 
@@ -136,13 +138,8 @@
   font-size: 20px;
   color: var(--blue);
   text-align: right;
-}
-.charge-container__total-minutes {
-  margin-right: 60px;
-}
-
-.charge-container__total-units {
-  margin-right: 25px;
+  grid-column: 2;
+  margin-right: 50px;
 }
 
 .no-services-selected {

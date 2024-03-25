@@ -9,14 +9,29 @@
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 8px;
+  overflow: hidden;
+}
+
+.logo {
+  float: left;
+  opacity: 0.7;
+  width: 100px;
 }
 
 .app-title {
   font-family: 'Roboto', sans-serif;
   color: var(--red);
   font-weight: 400;
+  opacity: 0.9;
   font-style: normal;
   text-align: center;
+  padding: 10px 0 10px 10px;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 form {
@@ -43,10 +58,23 @@ button {
   /* For mobile phones: */
   .app-title {
     font-size: 20px;
-    font-weight: 600;
-    padding-top: 50px;
+    font-weight: 400;
+    padding: 20px 0 20px 10px;
+    text-align: center;
+    opacity: 0.9;
   }
   .calculator-container {
     padding: 0px;
+  }
+  .logo {
+    float: left;
+    opacity: 0.7;
+    width: 100px;
+  }
+
+  .title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

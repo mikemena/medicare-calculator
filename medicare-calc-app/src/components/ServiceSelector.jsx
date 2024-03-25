@@ -11,6 +11,8 @@ function ServiceSelector() {
   const [selectedOption, setSelectedOption] = useState('');
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
+  const [currentTotalUnits, setCurrentTotalUnits] = useState(0);
+  const [currentTotalMinutes, setCurrentTotalMinutes] = useState(0);
 
   const handleDropdownChange = (e) => {
     const value = e.target.value;
@@ -61,6 +63,18 @@ function ServiceSelector() {
 
   const totalSelectedServices = selectedServices.length;
 
+  const needToUpdateSelectedServices = (newServices) => {
+    if (newServices.length !== selectedServices.length) return true;
+
+    return newServices.some((service, index) => {
+      const currentService = selectedServices[index];
+      return (
+        service.units !== currentService.units ||
+        service.code !== currentService.code
+      ); // Add more checks as needed
+    });
+  };
+
   const calculateTotals = () => {
     // First, assign units directly to 'Service Based' services
     const updatedServices = selectedServices.map((service) => {
@@ -93,16 +107,33 @@ function ServiceSelector() {
       return { ...service, units: unitsFromMinutes };
     });
 
-    const initiallyDistributedUnits = timeBasedServices.reduce(
-      (sum, service) => sum + service.units,
-      0
-    );
-    const remainingUnits = totalUnits - initiallyDistributedUnits;
+    let remainingUnits =
+      totalUnits -
+      timeBasedServices.reduce((sum, service) => sum + service.units, 0);
 
-    // Assign remaining units to the last 'Time Based' service, if applicable
-    if (remainingUnits > 0 && timeBasedServices.length > 0) {
-      const lastServiceIndex = timeBasedServices.length - 1;
-      timeBasedServices[lastServiceIndex].units += remainingUnits;
+    // Distribute remaining units based on the highest remainder minutes
+    while (remainingUnits > 0) {
+      let indexToIncrement = -1;
+      let maxRemainder = -1;
+
+      timeBasedServices.forEach((service, index) => {
+        const remainder = service.minutes % 15;
+        if (
+          (remainder > maxRemainder && service.units === 0) ||
+          (remainder > 0 && remainder >= maxRemainder)
+        ) {
+          maxRemainder = remainder;
+          indexToIncrement = index;
+        }
+      });
+
+      if (indexToIncrement !== -1) {
+        timeBasedServices[indexToIncrement].units += 1;
+        remainingUnits--;
+      } else {
+        // Break the loop if no suitable service is found to prevent an infinite loop
+        break;
+      }
     }
 
     // Merge back the 'Time Based' services with their new units
@@ -114,14 +145,18 @@ function ServiceSelector() {
     });
 
     // Update state to reflect the new units distribution and total calculations
-    setSelectedServices(finalServices);
+    if (needToUpdateSelectedServices(finalServices)) {
+      setSelectedServices(finalServices);
+    }
     setTotalUnits(
       totalUnits +
         updatedServices.filter(
           (service) => service.category === 'Service Based'
         ).length
     );
-    setTotalMinutes(totalTimedMinutes);
+    if (totalTimedMinutes !== currentTotalMinutes) {
+      setTotalMinutes(totalTimedMinutes);
+    }
   };
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes
@@ -227,10 +262,9 @@ function ServiceSelector() {
           {' '}
           <div>
             <div className="charge-container__total-section">
-              <p className="charge-container__total-title">
-                Total Billable Units
-              </p>
+              <p className="charge-container__total-title">Total Time</p>
               <p className="charge-container__total-minutes">{totalMinutes}</p>
+              <p className="charge-container__total-title">Total Units</p>
               <p className="charge-container__total-units">{totalUnits}</p>
             </div>
           </div>
