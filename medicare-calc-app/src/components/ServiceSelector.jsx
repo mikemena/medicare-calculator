@@ -265,7 +265,9 @@ function ServiceSelector() {
             <div className="charge-container__total-section">
               <p className="charge-container__total-title">Total Time</p>
               <p className="charge-container__total-minutes">{totalMinutes}</p>
-              <p className="charge-container__total-title">Total Units</p>
+              <p className="charge-container__total-title">
+                Total Billable Units
+              </p>
               <p className="charge-container__total-units">{totalUnits}</p>
             </div>
           </div>
