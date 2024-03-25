@@ -75,7 +75,7 @@ function ServiceSelector() {
     });
   };
 
-  const calculateTotals = () => {
+  const calculateTotals = (billingMethod) => {
     // First, assign units directly to 'Service Based' services
     const updatedServices = selectedServices.map((service) => {
       if (service.category === 'Service Based') {
@@ -88,51 +88,91 @@ function ServiceSelector() {
     let timeBasedServices = updatedServices.filter(
       (service) => service.category === 'Time Based'
     );
+    console.log('timeBasedServices:', timeBasedServices);
 
     const totalTimedMinutes = timeBasedServices.reduce(
       (total, service) => total + service.minutes,
       0
     );
+
+    console.log('totalTimedMinutes:', totalTimedMinutes);
+
     let totalUnits = Math.floor(totalTimedMinutes / 15);
     const remainderMinutes = totalTimedMinutes % 15;
 
+    console.log('totalUnits:', totalUnits);
+    console.log('remainderMinutes:', remainderMinutes);
+
     // Apply the 8-minute rule for the aggregate of remainder minutes
-    if (remainderMinutes >= 8) {
+    if (billingMethod === 'CMS' && remainderMinutes >= 8) {
       totalUnits += 1;
     }
+    console.log('CMS totalUnits after 8-minute rule:', totalUnits);
 
-    // Distribute initial units to 'Time Based' services
-    timeBasedServices = timeBasedServices.map((service) => {
-      const unitsFromMinutes = Math.floor(service.minutes / 15);
-      return { ...service, units: unitsFromMinutes };
-    });
-
-    let remainingUnits =
-      totalUnits -
-      timeBasedServices.reduce((sum, service) => sum + service.units, 0);
-
-    // Distribute remaining units based on the highest remainder minutes
-    while (remainingUnits > 0) {
-      let indexToIncrement = -1;
-      let maxRemainder = -1;
-
-      timeBasedServices.forEach((service, index) => {
-        const remainder = service.minutes % 15;
-        if (
-          (remainder > maxRemainder && service.units === 0) ||
-          (remainder > 0 && remainder >= maxRemainder)
-        ) {
-          maxRemainder = remainder;
-          indexToIncrement = index;
+    // For AMA, apply 8-minute rule individually for each 'Time Based' service
+    if (billingMethod === 'AMA') {
+      timeBasedServices.forEach((service) => {
+        if (service.minutes >= 8) {
+          service.units = 1;
+          totalUnits += 1;
+        } else {
+          service.units = 0;
         }
       });
+    } else {
+      // For CMS or other billing methods, distribute initial units based on 15-minute intervals
+      timeBasedServices = timeBasedServices.map((service) => {
+        const unitsFromMinutes = Math.floor(service.minutes / 15);
+        return { ...service, units: unitsFromMinutes };
+      });
+    }
 
-      if (indexToIncrement !== -1) {
-        timeBasedServices[indexToIncrement].units += 1;
-        remainingUnits--;
-      } else {
-        // Break the loop if no suitable service is found to prevent an infinite loop
-        break;
+    console.log(
+      'timeBasedServices after initial distribution:',
+      timeBasedServices
+    );
+
+    // If CMS, distribute remaining units based on the highest remainder minutes
+    if (billingMethod === 'CMS') {
+      let remainingUnits =
+        totalUnits -
+        timeBasedServices.reduce((sum, service) => sum + service.units, 0);
+
+      console.log('remainingUnits:', remainingUnits);
+
+      // Distribute remaining units based on the highest remainder minutes
+      while (remainingUnits > 0) {
+        let indexToIncrement = -1;
+        let foundServiceWithZeroUnits = false;
+
+        // First, check if any service has zero units
+        for (let i = 0; i < timeBasedServices.length; i++) {
+          if (timeBasedServices[i].units === 0) {
+            indexToIncrement = i;
+            foundServiceWithZeroUnits = true;
+            break;
+          }
+        }
+
+        // If no service has zero units, then find the service with the highest remainder
+        if (!foundServiceWithZeroUnits) {
+          let maxRemainder = -1;
+          timeBasedServices.forEach((service, index) => {
+            const remainder = service.minutes % 15;
+            if (remainder > maxRemainder) {
+              maxRemainder = remainder;
+              indexToIncrement = index;
+            }
+          });
+        }
+        // Increment units for the identified service
+        if (indexToIncrement !== -1) {
+          timeBasedServices[indexToIncrement].units += 1;
+          remainingUnits--;
+        } else {
+          // Break the loop if no suitable service is found to prevent an infinite loop
+          break;
+        }
       }
     }
 
@@ -161,7 +201,7 @@ function ServiceSelector() {
 
   // useEffect hook to recalculate totals whenever selectedServices or method changes
   useEffect(() => {
-    calculateTotals();
+    calculateTotals(method);
   }, [selectedServices, method]);
 
   const handleReset = () => {
