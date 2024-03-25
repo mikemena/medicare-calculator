@@ -159,6 +159,12 @@
   color: var(--blue);
 }
 
+.charge-container__app-version {
+  text-align: center;
+  margin-top: 25px;
+  color: rgb(207, 205, 205);
+}
+
 @media only screen and (max-width: 768px) {
   .charge-container {
     padding: 10px; /* Slightly increased padding for better spacing */

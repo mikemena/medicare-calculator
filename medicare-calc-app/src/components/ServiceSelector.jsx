@@ -314,6 +314,7 @@ function ServiceSelector() {
           <button className="charge-container__reset-btn" onClick={handleReset}>
             Reset
           </button>
+          <p className="charge-container__app-version">v1.0</p>
         </>
       )}
       {totalSelectedServices === 0 && (
