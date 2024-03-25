@@ -13,14 +13,6 @@
   border: 1px solid #ccc;
 }
 
-.charge-container__charge-selector {
-  margin: auto;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  width: 100%;
-}
-
 .charge-container h2 {
   color: var(--blue);
   border-bottom: 2px solid #eaeaea;
@@ -55,6 +47,25 @@
   width: 55px;
   text-align: center;
   margin-top: 10px;
+}
+
+.charge-container__add-charge-container {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.charge-container__add-charge {
+  color: #2a804d;
+  margin-right: 10px;
+}
+
+.charge-container__charge-selector {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
 .charge-details,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import servicesData from '../cptCodes.json';
-import { RiDeleteBack2Fill } from 'react-icons/ri';
+import { RiDeleteBack2Fill, RiAddCircleFill } from 'react-icons/ri';
 
 import './ServiceSelector.css';
 
@@ -186,28 +186,6 @@ function ServiceSelector() {
         <option value="AMA">AMA</option>
       </select>
 
-      <h2>Select Charge</h2>
-      <select
-        className="charge-container__charge-selector"
-        value={selectedOption}
-        onChange={handleDropdownChange}
-      >
-        <option value="">Select Charge</option>
-        {Object.entries(servicesData).map(([category, services]) => (
-          <optgroup label={category.toUpperCase()} key={category}>
-            {services.map((service) =>
-              service.codes.map((code) => (
-                <option
-                  key={`${category}::${service.service}::${code}`}
-                  value={`${category}::${service.service}::${code}`}
-                >
-                  {code} - {service.service}
-                </option>
-              ))
-            )}
-          </optgroup>
-        ))}
-      </select>
       {/* Section for displaying selected services */}
       <div className="charge-container__selected-services">
         <div className="charge-container__selected-services-header">
@@ -256,7 +234,30 @@ function ServiceSelector() {
           </div>
         ))}
       </div>
-
+      <div className="charge-container__add-charge-container">
+        <RiAddCircleFill className="charge-container__add-charge" size={20} />
+        <select
+          className="charge-container__charge-selector"
+          value={selectedOption}
+          onChange={handleDropdownChange}
+        >
+          <option value="">Add Charge</option>
+          {Object.entries(servicesData).map(([category, services]) => (
+            <optgroup label={category.toUpperCase()} key={category}>
+              {services.map((service) =>
+                service.codes.map((code) => (
+                  <option
+                    key={`${category}::${service.service}::${code}`}
+                    value={`${category}::${service.service}::${code}`}
+                  >
+                    {code} - {service.service}
+                  </option>
+                ))
+              )}
+            </optgroup>
+          ))}
+        </select>
+      </div>
       {totalSelectedServices > 0 && (
         <>
           {' '}
