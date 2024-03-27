@@ -143,46 +143,68 @@ function ServiceSelector() {
     // If CMS, distribute remaining units based on the highest remainder minutes
     if (billingMethod === 'CMS') {
       console.log('Billing Method', billingMethod);
-      let remainingUnits =
-        totalUnits -
-        timeBasedServices.reduce((sum, service) => sum + service.units, 0);
 
-      console.log('remainingUnits:', remainingUnits);
+      // Edge case handling: When total units are less than the number of time-based services
+      if (totalUnits < timeBasedServices.length) {
+        // Sort services by minutes ascendingly to find the one(s) with the least amount of time
+        timeBasedServices.sort((a, b) => a.minutes - b.minutes);
 
-      // Distribute remaining units based on the highest remainder minutes
-      while (remainingUnits > 0) {
-        let indexToIncrement = -1;
-        let foundServiceWithZeroUnits = false;
+        // Set units to 0 for the service(s) with the least time until the number of services with >0 units matches totalUnits
+        for (let i = 0; i < timeBasedServices.length - totalUnits; i++) {
+          timeBasedServices[i].units = 0;
+        }
 
-        // First, check if any service has zero units
-        for (let i = 0; i < timeBasedServices.length; i++) {
-          if (timeBasedServices[i].units === 0) {
-            indexToIncrement = i;
-            foundServiceWithZeroUnits = true;
+        // Ensure the rest have at least 1 unit, considering there might be not enough total units for all
+        for (
+          let i = timeBasedServices.length - totalUnits;
+          i < timeBasedServices.length;
+          i++
+        ) {
+          timeBasedServices[i].units = 1;
+        }
+      } else {
+        let remainingUnits =
+          totalUnits -
+          timeBasedServices.reduce((sum, service) => sum + service.units, 0);
+        console.log('remainingUnits:', remainingUnits);
+
+        // Distribute remaining units based on the highest remainder minutes
+        while (remainingUnits > 0) {
+          let indexToIncrement = -1;
+          let foundServiceWithZeroUnits = false;
+
+          // First, check if any service has zero units
+          for (let i = 0; i < timeBasedServices.length; i++) {
+            if (timeBasedServices[i].units === 0) {
+              indexToIncrement = i;
+              foundServiceWithZeroUnits = true;
+              break;
+            }
+          }
+
+          // If no service has zero units, then find the service with the highest remainder
+          if (!foundServiceWithZeroUnits) {
+            let maxRemainder = -1;
+            timeBasedServices.forEach((service, index) => {
+              const remainder = service.minutes % 15;
+              if (remainder > maxRemainder) {
+                maxRemainder = remainder;
+                indexToIncrement = index;
+              }
+            });
+          }
+          // Increment units for the identified service
+          if (indexToIncrement !== -1) {
+            timeBasedServices[indexToIncrement].units += 1;
+            remainingUnits--;
+          } else {
+            // Break the loop if no suitable service is found to prevent an infinite loop
             break;
           }
         }
-
-        // If no service has zero units, then find the service with the highest remainder
-        if (!foundServiceWithZeroUnits) {
-          let maxRemainder = -1;
-          timeBasedServices.forEach((service, index) => {
-            const remainder = service.minutes % 15;
-            if (remainder > maxRemainder) {
-              maxRemainder = remainder;
-              indexToIncrement = index;
-            }
-          });
-        }
-        // Increment units for the identified service
-        if (indexToIncrement !== -1) {
-          timeBasedServices[indexToIncrement].units += 1;
-          remainingUnits--;
-        } else {
-          // Break the loop if no suitable service is found to prevent an infinite loop
-          break;
-        }
       }
+
+      console.log('timeBasedServices after processing:', timeBasedServices);
     }
 
     // Merge back the 'Time Based' services with their new units
