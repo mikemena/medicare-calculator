@@ -168,38 +168,31 @@ function ServiceSelector() {
           timeBasedServices.reduce((sum, service) => sum + service.units, 0);
         console.log('remainingUnits:', remainingUnits);
 
-        // Distribute remaining units based on the highest remainder minutes
-        while (remainingUnits > 0) {
-          let indexToIncrement = -1;
-          let foundServiceWithZeroUnits = false;
+        // Distribute remaining units, prioritizing services with more minutes
+        timeBasedServices.forEach((service) => {
+          if (remainingUnits <= 0) return; // Stop if no units left
 
-          // First, check if any service has zero units
-          for (let i = 0; i < timeBasedServices.length; i++) {
-            if (timeBasedServices[i].units === 0) {
-              indexToIncrement = i;
-              foundServiceWithZeroUnits = true;
-              break;
-            }
-          }
+          // Calculate the maximum eligible units for this service based on its minutes
+          const maxEligibleUnits = Math.ceil(service.minutes / 15);
 
-          // If no service has zero units, then find the service with the highest remainder
-          if (!foundServiceWithZeroUnits) {
-            let maxRemainder = -1;
-            timeBasedServices.forEach((service, index) => {
-              const remainder = service.minutes % 15;
-              if (remainder > maxRemainder) {
-                maxRemainder = remainder;
-                indexToIncrement = index;
-              }
-            });
-          }
-          // Increment units for the identified service
-          if (indexToIncrement !== -1) {
-            timeBasedServices[indexToIncrement].units += 1;
+          // Only assign a unit if the service hasn't reached its max eligible units
+          if (service.units < maxEligibleUnits) {
+            service.units += 1;
             remainingUnits--;
-          } else {
-            // Break the loop if no suitable service is found to prevent an infinite loop
-            break;
+
+            // Immediately check if there are no remaining units after the assignment
+            if (remainingUnits <= 0) return;
+          }
+        });
+
+        // Double-check to prevent over-distribution
+        if (remainingUnits < 0) {
+          // Identify the last service that received an extra unit and remove it
+          for (let i = timeBasedServices.length - 1; i >= 0; i--) {
+            if (timeBasedServices[i].units > 0) {
+              timeBasedServices[i].units -= 1;
+              break; // Stop after adjusting the last service that received an extra unit
+            }
           }
         }
       }
@@ -345,7 +338,7 @@ function ServiceSelector() {
           <button className="charge-container__reset-btn" onClick={handleReset}>
             Reset
           </button>
-          <p className="charge-container__app-version">v1.2</p>
+          <p className="charge-container__app-version">v1.3</p>
         </>
       )}
       {totalSelectedServices === 0 && (
