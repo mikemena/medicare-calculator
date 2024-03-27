@@ -115,8 +115,12 @@ function ServiceSelector() {
       totalUnits = 0;
       timeBasedServices.forEach((service) => {
         if (service.minutes >= 8) {
-          service.units = 1;
-          totalUnits += 1;
+          service.units = Math.floor(service.minutes / 15);
+          const remainder = service.minutes % 15;
+          if (remainder >= 8) {
+            service.units += 1;
+          }
+          totalUnits += service.units;
         } else {
           service.units = 0;
         }
@@ -319,7 +323,7 @@ function ServiceSelector() {
           <button className="charge-container__reset-btn" onClick={handleReset}>
             Reset
           </button>
-          <p className="charge-container__app-version">v1.1</p>
+          <p className="charge-container__app-version">v1.2</p>
         </>
       )}
       {totalSelectedServices === 0 && (
