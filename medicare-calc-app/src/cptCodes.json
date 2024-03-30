@@ -47,6 +47,10 @@
       "codes": ["97112"]
     },
     {
+      "service": "Therapeutic Activities",
+      "codes": ["97530"]
+    },
+    {
       "service": "Self-care/home management training",
       "codes": ["97535"]
     },
