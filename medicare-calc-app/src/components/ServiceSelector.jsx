@@ -165,27 +165,35 @@ function ServiceSelector() {
 
         // console.log('remaining units', remainingUnits);
         console.log('total units', totalUnits);
+
+        // Initial setup for totalAllocatedUnits and totalUnitsAllowed
+        let totalAllocatedUnits = timeBasedServices.reduce(
+          (sum, service) => sum + service.units,
+          0
+        );
+
         // Distribute remaining units
         timeBasedServices.forEach((service) => {
-          // Only distribute if there are remaining units
-          if (remainingUnits > 0 && remainingUnits < totalUnits) {
-            console.log('serice', service);
+          console.log('Service:', service);
 
+          if (totalAllocatedUnits < totalUnits) {
             const potentialNewTotal = service.units + 1; // Potential new total after adding a unit
+            console.log('Potential new total by service:', potentialNewTotal);
 
-            console.log('potential new total by service', potentialNewTotal);
             const unitsNeededForNextUnit =
               Math.ceil(service.minutes / 15) - service.units; // Units needed to reach the next 15-minute block
 
-            // Check if the service can receive an additional unit
+            // Check if the service can receive an additional unit without exceeding totalUnitsAllowed
             if (
               unitsNeededForNextUnit > 0 &&
-              potentialNewTotal <= unitsNeededForNextUnit &&
-              remainingUnits < totalUnits
+              totalAllocatedUnits + 1 <= totalUnits
             ) {
               service.units += 1; // Add one more unit
-              remainingUnits -= 1; // Decrease the count of remaining units
-              console.log('remaining units loop', remainingUnits);
+              totalAllocatedUnits += 1; // Update the count of total allocated units
+              console.log(
+                'Remaining units after allocation:',
+                totalUnits - totalAllocatedUnits
+              );
             }
           }
         });
