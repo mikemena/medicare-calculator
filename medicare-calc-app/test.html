@@ -1,0 +1,90 @@
+<div class="charge-container">
+  <h2>Select Calculation Method</h2>
+  <select id="methodSelector" class="charge-container__method-selector">
+    <option value="CMS">CMS</option>
+    <option value="AMA">AMA</option>
+  </select>
+  <div class="charge-container__selected-services">
+    <div class="charge-container__selected-services-header">Charges</div>
+    <div class="charge-container__selected-services-header">Minutes</div>
+    <div class="charge-container__selected-services-header">Units</div>
+  </div>
+  <div class="charge-container__add-charge-container">
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 24 24"
+      class="charge-container__add-charge"
+      height="20"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11H7V13H11V17H13V13H17V11H13V7H11V11Z"
+      ></path></svg
+    ><select id="chargeSelector" class="charge-container__charge-selector">
+      <option value="">Add Charge</option>
+      <optgroup label="SERVICE BASED">
+        <option value="Service Based::PT evaluation::97161">
+          97161 - PT evaluation
+        </option>
+        <option value="Service Based::PT evaluation::97162">
+          97162 - PT evaluation
+        </option>
+        <option value="Service Based::PT evaluation::97163">
+          97163 - PT evaluation
+        </option>
+        <option value="Service Based::PT re-evaluation::97164">
+          97164 - PT re-evaluation
+        </option>
+        <option
+          value="Service Based::Electrical stimulation (unattended)::97014"
+        >
+          97014 - Electrical stimulation (unattended)
+        </option>
+        <option value="Service Based::Hot/cold packs::97010">
+          97010 - Hot/cold packs
+        </option>
+        <option value="Service Based::Group therapy::97150">
+          97150 - Group therapy
+        </option>
+      </optgroup>
+      <optgroup label="TIME BASED">
+        <option value="Time Based::Electrical stimulation (manual)::97032">
+          97032 - Electrical stimulation (manual)
+        </option>
+        <option value="Time Based::Ultrasound::97035">
+          97035 - Ultrasound
+        </option>
+        <option value="Time Based::Gait training::97116">
+          97116 - Gait training
+        </option>
+        <option value="Time Based::Therapeutic exercise::97110">
+          97110 - Therapeutic exercise
+        </option>
+        <option value="Time Based::Manual therapy::97140">
+          97140 - Manual therapy
+        </option>
+        <option value="Time Based::Neuromuscular re-education::97112">
+          97112 - Neuromuscular re-education
+        </option>
+        <option value="Time Based::Therapeutic Activities::97530">
+          97530 - Therapeutic Activities
+        </option>
+        <option value="Time Based::Self-care/home management training::97535">
+          97535 - Self-care/home management training
+        </option>
+        <option value="Time Based::Prosthetic training::97761">
+          97761 - Prosthetic training
+        </option>
+        <option
+          value="Time Based::Physical performance test or measurement::97750"
+        >
+          97750 - Physical performance test or measurement
+        </option>
+      </optgroup>
+    </select>
+  </div>
+  <p class="no-services-selected">No charges selected</p>
+</div>

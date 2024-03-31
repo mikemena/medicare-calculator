@@ -33,7 +33,7 @@ function ServiceSelector() {
           category,
           service,
           code,
-          minutes: category === 'time-based' ? 0 : null,
+          minutes: category === 'Time Based' ? 0 : null,
         },
       ]);
     }
@@ -276,6 +276,7 @@ function ServiceSelector() {
       <h2>Select Calculation Method</h2>
 
       <select
+        id="methodSelector"
         className="charge-container__method-selector"
         value={method}
         onChange={(e) => setMethod(e.target.value)}
@@ -313,6 +314,8 @@ function ServiceSelector() {
               <div className="charge-container__minutes-input_container">
                 <input
                   type="number"
+                  id={`charge-${item.code}-minutes`}
+                  aria-label="Minutes"
                   className="charge-container__minutes-input"
                   placeholder="0"
                   value={item.minutes || ''}
@@ -325,7 +328,10 @@ function ServiceSelector() {
             ) : (
               <p className="charge-container__no-minutes">N/A</p>
             )}
-            <div className="charge-container__units-display">
+            <div
+              id={`charge-${item.code}-units`}
+              className="charge-container__units-display"
+            >
               {/* {item.category === 'Service Based' ? '1' : item.units} */}
               {item.units || 0}
             </div>
@@ -335,6 +341,7 @@ function ServiceSelector() {
       <div className="charge-container__add-charge-container">
         <RiAddCircleFill className="charge-container__add-charge" size={20} />
         <select
+          id="chargeSelector"
           className="charge-container__charge-selector"
           value={selectedOption}
           onChange={handleDropdownChange}
@@ -362,11 +369,15 @@ function ServiceSelector() {
           <div>
             <div className="charge-container__total-section">
               <p className="charge-container__total-title">Total Time</p>
-              <p className="charge-container__total-minutes">{totalMinutes}</p>
+              <p id="totalMinutes" className="charge-container__total-minutes">
+                {totalMinutes}
+              </p>
               <p className="charge-container__total-title">
                 Total Billable Units
               </p>
-              <p className="charge-container__total-units">{totalUnits}</p>
+              <p id="totalUnits" className="charge-container__total-units">
+                {totalUnits}
+              </p>
             </div>
           </div>
           <button className="charge-container__reset-btn" onClick={handleReset}>

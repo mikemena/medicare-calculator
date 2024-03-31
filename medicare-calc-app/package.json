@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "test": "jest"
+    "test": "jest",
+    "jest": "jest"
   },
   "dependencies": {
     "react": "^18.2.0",
