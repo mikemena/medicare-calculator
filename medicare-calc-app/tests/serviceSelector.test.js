@@ -363,7 +363,7 @@ describe('ServiceSelector', () => {
     expect(totalUnitsDisplay.textContent).toBe('6');
   });
 
-  test('should correctly calculate total minutes and units for CMS method. 3 services and 46 total minutes for 3 total units', () => {
+  test('should correctly calculate total minutes and units for CMS method. 3 services and 40 total minutes for 3 total units', () => {
     const { getByLabelText, getByText, getAllByRole } = render(
       <ServiceSelector />
     );
@@ -375,24 +375,24 @@ describe('ServiceSelector', () => {
 
     fireEvent.change(methodSelect, { target: { value: 'CMS' } });
 
-    // Select service 97116 and add 15 minutes
+    // Select service 97116 and add 25 minutes
 
     const serviceSelect = container.querySelector('#chargeSelector');
     fireEvent.change(serviceSelect, {
       target: { value: 'Time Based::Gait training::97116' },
     });
     const minutesInput97116 = container.querySelector('#charge-97116-minutes');
-    fireEvent.change(minutesInput97116, { target: { value: '15' } });
+    fireEvent.change(minutesInput97116, { target: { value: '25' } });
 
-    // Select service 97035 and add 8 minutes
+    // Select service 97035 and add 10 minutes
 
     fireEvent.change(serviceSelect, {
       target: { value: 'Time Based::Ultrasound::97035' },
     });
     const minutesInput97035 = container.querySelector('#charge-97035-minutes');
-    fireEvent.change(minutesInput97035, { target: { value: '8' } });
+    fireEvent.change(minutesInput97035, { target: { value: '10' } });
 
-    // Select service 97750 and add 23 minutes
+    // Select service 97750 and add 5 minutes
 
     fireEvent.change(serviceSelect, {
       target: {
@@ -400,17 +400,133 @@ describe('ServiceSelector', () => {
       },
     });
     const minutesInput97750 = container.querySelector('#charge-97750-minutes');
-    fireEvent.change(minutesInput97750, { target: { value: '23' } });
+    fireEvent.change(minutesInput97750, { target: { value: '5' } });
+
+    // Check total minutes and units
+    const units97116 = container.querySelector('#charge-97116-units');
+    expect(units97116.textContent).toBe('2');
+    const units97035 = container.querySelector('#charge-97035-units');
+    expect(units97035.textContent).toBe('1');
+    const units97750 = container.querySelector('#charge-97750-units');
+    expect(units97750.textContent).toBe('0');
+    const totalMinutesDisplay = container.querySelector('#totalMinutes');
+    expect(totalMinutesDisplay.textContent).toBe('40');
+    const totalUnitsDisplay = container.querySelector('#totalUnits');
+    expect(totalUnitsDisplay.textContent).toBe('3');
+  });
+
+  test('should correctly calculate total minutes and units for CMS method. 3 services and 40 total minutes for 3 total units', () => {
+    const { getByLabelText, getByText, getAllByRole } = render(
+      <ServiceSelector />
+    );
+
+    // Select CMS method
+    const { container } = render(<ServiceSelector />);
+
+    const methodSelect = container.querySelector('#methodSelector');
+
+    fireEvent.change(methodSelect, { target: { value: 'CMS' } });
+
+    // Select service 97116 and add 5 minutes
+
+    const serviceSelect = container.querySelector('#chargeSelector');
+    fireEvent.change(serviceSelect, {
+      target: { value: 'Time Based::Gait training::97116' },
+    });
+    const minutesInput97116 = container.querySelector('#charge-97116-minutes');
+    fireEvent.change(minutesInput97116, { target: { value: '5' } });
+
+    // Select service 97035 and add 10 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: { value: 'Time Based::Ultrasound::97035' },
+    });
+    const minutesInput97035 = container.querySelector('#charge-97035-minutes');
+    fireEvent.change(minutesInput97035, { target: { value: '10' } });
+
+    // Select service 97750 and add 25 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: {
+        value: 'Time Based::Physical performance test or measurement::97750',
+      },
+    });
+    const minutesInput97750 = container.querySelector('#charge-97750-minutes');
+    fireEvent.change(minutesInput97750, { target: { value: '25' } });
+
+    // Check total minutes and units
+    const units97116 = container.querySelector('#charge-97116-units');
+    expect(units97116.textContent).toBe('0');
+    const units97035 = container.querySelector('#charge-97035-units');
+    expect(units97035.textContent).toBe('1');
+    const units97750 = container.querySelector('#charge-97750-units');
+    expect(units97750.textContent).toBe('2');
+    const totalMinutesDisplay = container.querySelector('#totalMinutes');
+    expect(totalMinutesDisplay.textContent).toBe('40');
+    const totalUnitsDisplay = container.querySelector('#totalUnits');
+    expect(totalUnitsDisplay.textContent).toBe('3');
+  });
+
+  test('should correctly calculate total minutes and units for CMS method. 4 services and 47 total minutes for 3 total units', () => {
+    const { getByLabelText, getByText, getAllByRole } = render(
+      <ServiceSelector />
+    );
+
+    // Select CMS method
+    const { container } = render(<ServiceSelector />);
+
+    const methodSelect = container.querySelector('#methodSelector');
+
+    fireEvent.change(methodSelect, { target: { value: 'CMS' } });
+
+    // Select service 97116 and add 10 minutes
+
+    const serviceSelect = container.querySelector('#chargeSelector');
+    fireEvent.change(serviceSelect, {
+      target: { value: 'Time Based::Gait training::97116' },
+    });
+    const minutesInput97116 = container.querySelector('#charge-97116-minutes');
+    fireEvent.change(minutesInput97116, { target: { value: '10' } });
+
+    // Select service 97035 and add 25 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: { value: 'Time Based::Ultrasound::97035' },
+    });
+    const minutesInput97035 = container.querySelector('#charge-97035-minutes');
+    fireEvent.change(minutesInput97035, { target: { value: '25' } });
+
+    // Select service 97750 and add 5 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: {
+        value: 'Time Based::Physical performance test or measurement::97750',
+      },
+    });
+    const minutesInput97750 = container.querySelector('#charge-97750-minutes');
+    fireEvent.change(minutesInput97750, { target: { value: '5' } });
+
+    // Select service 97032 and add 7 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: {
+        value: 'Time Based::Electrical stimulation (manual)::97032',
+      },
+    });
+    const minutesInput97032 = container.querySelector('#charge-97032-minutes');
+    fireEvent.change(minutesInput97032, { target: { value: '7' } });
 
     // Check total minutes and units
     const units97116 = container.querySelector('#charge-97116-units');
     expect(units97116.textContent).toBe('1');
     const units97035 = container.querySelector('#charge-97035-units');
-    expect(units97035.textContent).toBe('1');
+    expect(units97035.textContent).toBe('2');
     const units97750 = container.querySelector('#charge-97750-units');
-    expect(units97750.textContent).toBe('1');
+    expect(units97750.textContent).toBe('0');
+    const units97032 = container.querySelector('#charge-97032-units');
+    expect(units97032.textContent).toBe('0');
     const totalMinutesDisplay = container.querySelector('#totalMinutes');
-    expect(totalMinutesDisplay.textContent).toBe('46');
+    expect(totalMinutesDisplay.textContent).toBe('47');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
     expect(totalUnitsDisplay.textContent).toBe('3');
   });
