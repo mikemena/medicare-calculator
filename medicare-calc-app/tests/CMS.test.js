@@ -4,45 +4,6 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import ServiceSelector from '../src/components/ServiceSelector';
 
 describe('ServiceSelector', () => {
-  test('should correctly calculate total minutes and units for AMA method. 2 services and 33 total minutes for 3 total units', () => {
-    const { getByLabelText, getByText, getAllByRole } = render(
-      <ServiceSelector />
-    );
-
-    // Select AMA method
-    const { container } = render(<ServiceSelector />);
-
-    const methodSelect = container.querySelector('#methodSelector');
-
-    fireEvent.change(methodSelect, { target: { value: 'AMA' } });
-
-    // Select service 97116 and add 10 minutes
-    const serviceSelect = container.querySelector('#chargeSelector');
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Gait training::97116' },
-    });
-    const minutesInput97116 = container.querySelector('#charge-97116-minutes');
-    fireEvent.change(minutesInput97116, { target: { value: '10' } });
-
-    // Select service 97110 and add 23 minutes
-
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Therapeutic exercise::97110' },
-    });
-    const minutesInput97110 = container.querySelector('#charge-97110-minutes');
-    fireEvent.change(minutesInput97110, { target: { value: '23' } });
-
-    // Check total minutes and units
-    const units97116 = container.querySelector('#charge-97116-units');
-    expect(units97116.textContent).toBe('1');
-    const units97110 = container.querySelector('#charge-97110-units');
-    expect(units97110.textContent).toBe('2');
-    const totalMinutesDisplay = container.querySelector('#totalMinutes');
-    expect(totalMinutesDisplay.textContent).toBe('33');
-    const totalUnitsDisplay = container.querySelector('#totalUnits');
-    expect(totalUnitsDisplay.textContent).toBe('3');
-  });
-
   test('should correctly calculate total minutes and units for CMS method. 3 services and 28 total minutes for 2 total units', () => {
     const { getByLabelText, getByText, getAllByRole } = render(
       <ServiceSelector />
@@ -89,46 +50,6 @@ describe('ServiceSelector', () => {
     expect(units97140.textContent).toBe('1');
     const totalMinutesDisplay = container.querySelector('#totalMinutes');
     expect(totalMinutesDisplay.textContent).toBe('28');
-    const totalUnitsDisplay = container.querySelector('#totalUnits');
-    expect(totalUnitsDisplay.textContent).toBe('2');
-  });
-
-  test('should correctly calculate total minutes and units for AMA method. 2 services and 16 total minutes for 2 total units', () => {
-    const { getByLabelText, getByText, getAllByRole } = render(
-      <ServiceSelector />
-    );
-
-    // Select AMA method
-    const { container } = render(<ServiceSelector />);
-
-    const methodSelect = container.querySelector('#methodSelector');
-
-    fireEvent.change(methodSelect, { target: { value: 'AMA' } });
-
-    // Select service 97110 and add 10 minutes
-
-    const serviceSelect = container.querySelector('#chargeSelector');
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Therapeutic exercise::97110' },
-    });
-    const minutesInput97110 = container.querySelector('#charge-97110-minutes');
-    fireEvent.change(minutesInput97110, { target: { value: '8' } });
-
-    // Select service 97140 and add 10 minutes
-
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Manual therapy::97140' },
-    });
-    const minutesInput97140 = container.querySelector('#charge-97140-minutes');
-    fireEvent.change(minutesInput97140, { target: { value: '8' } });
-
-    // Check total minutes and units
-    const units97110 = container.querySelector('#charge-97110-units');
-    expect(units97110.textContent).toBe('1');
-    const units97140 = container.querySelector('#charge-97140-units');
-    expect(units97140.textContent).toBe('1');
-    const totalMinutesDisplay = container.querySelector('#totalMinutes');
-    expect(totalMinutesDisplay.textContent).toBe('16');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
     expect(totalUnitsDisplay.textContent).toBe('2');
   });
@@ -271,46 +192,6 @@ describe('ServiceSelector', () => {
     expect(totalMinutesDisplay.textContent).toBe('28');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
     expect(totalUnitsDisplay.textContent).toBe('2');
-  });
-
-  test('should correctly calculate total minutes and units for AMA method. 2 services and 33 total minutes for 3 total units', () => {
-    const { getByLabelText, getByText, getAllByRole } = render(
-      <ServiceSelector />
-    );
-
-    // Select AMA method
-    const { container } = render(<ServiceSelector />);
-
-    const methodSelect = container.querySelector('#methodSelector');
-
-    fireEvent.change(methodSelect, { target: { value: 'AMA' } });
-
-    // Select service 97116 and add 10 minutes
-
-    const serviceSelect = container.querySelector('#chargeSelector');
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Gait training::97116' },
-    });
-    const minutesInput97116 = container.querySelector('#charge-97116-minutes');
-    fireEvent.change(minutesInput97116, { target: { value: '10' } });
-
-    // Select service 97110 and add 23 minutes
-
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Therapeutic exercise::97110' },
-    });
-    const minutesInput97110 = container.querySelector('#charge-97110-minutes');
-    fireEvent.change(minutesInput97110, { target: { value: '23' } });
-
-    // Check total minutes and units
-    const units97116 = container.querySelector('#charge-97116-units');
-    expect(units97116.textContent).toBe('1');
-    const units97110 = container.querySelector('#charge-97110-units');
-    expect(units97110.textContent).toBe('2');
-    const totalMinutesDisplay = container.querySelector('#totalMinutes');
-    expect(totalMinutesDisplay.textContent).toBe('33');
-    const totalUnitsDisplay = container.querySelector('#totalUnits');
-    expect(totalUnitsDisplay.textContent).toBe('3');
   });
 
   test('should correctly calculate total minutes and units for CMS method. 3 services and 83 total minutes for 6 total units', () => {
