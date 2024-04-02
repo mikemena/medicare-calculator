@@ -91,7 +91,7 @@ function ServiceSelector() {
     );
 
     let totalUnits = Math.floor(totalTimedMinutes / 15);
-    const remainderMinutes = totalTimedMinutes % 15;
+    let remainderMinutes = totalTimedMinutes % 15;
 
     // Apply the 8-minute rule for the aggregate of remainder minutes
     if (billingMethod === 'CMS' && remainderMinutes >= 8) {
@@ -118,119 +118,113 @@ function ServiceSelector() {
       // For CMS or other billing methods, distribute initial units based on 15-minute intervals
       timeBasedServices = timeBasedServices.map((service) => {
         const unitsFromMinutes = Math.floor(service.minutes / 15);
-        return { ...service, units: unitsFromMinutes };
+        const remainder = service.minutes % 15;
+        return { ...service, units: unitsFromMinutes, remainder };
       });
+
+      // Calculate the total remaining minutes and determine additional units
+      const totalRemainingMinutes = timeBasedServices.reduce(
+        (acc, curr) => acc + curr.remainder,
+        0
+      );
+      const additionalUnits = Math.floor(totalRemainingMinutes / 15);
+      remainderMinutes += totalRemainingMinutes % 15;
     }
 
     // If CMS, distribute remaining units based on the highest remainder minutes
     if (billingMethod === 'CMS') {
-      // Edge case handling: When total units are less than the number of time-based services
-      if (totalUnits < timeBasedServices.length) {
-        console.log('service total minutes', totalTimedMinutes);
-        console.log('service total units', totalUnits);
-        console.log('service total', timeBasedServices.length);
+      console.log('Starting CMS billing method calculation.');
+      // Step 1: Calculate Initial Units for Each Service
+      timeBasedServices.forEach((service) => {
+        service.units = Math.floor(service.minutes / 15); // Calculate initial units
+        service.remainder = service.minutes % 15; // Calculate remainder minutes
+        console.log(`Step 1 - ${service.code} Initial Units:`, service.units);
+        console.log(
+          `Step 1 - ${service.code} Remainder Minutes:`,
+          service.remainder
+        );
+      });
+      console.log(`Step 1 - Initial Units:`, timeBasedServices);
 
-        // Initial unit calculation and remainder
-        timeBasedServices.forEach((service) => {
-          service.units = Math.floor(service.minutes / 15); // Initial units based on total time
-          service.remainder = service.minutes % 15; // Remainder calculation
-          console.log(
-            `Service ID: ${service.id}, Initial Units: ${service.units}, Remainder: ${service.remainder}`
-          );
-        });
+      // Step 2: Aggregate Remainder Minutes
+      const totalRemainderMinutes = timeBasedServices.reduce(
+        (acc, service) => acc + service.remainder,
+        0
+      );
+      console.log(
+        'Step 2 - Total Aggregate Remainder Minutes:',
+        totalRemainderMinutes
+      );
 
-        // Sort services first by remainder in descending order, then by service time in descending order if remainders are the same
+      // Step 3 & 4: Apply the 8-Minute Rule and Distribute Additional Units
+      if (totalRemainderMinutes >= 8) {
+        // Sort services by remainder minutes in descending order
         timeBasedServices.sort((a, b) => {
-          // First, compare by remainder
-          const remainderDifference = b.remainder - a.remainder;
-          if (remainderDifference !== 0) {
-            return remainderDifference;
+          const remainderDiff = b.remainder - a.remainder;
+          if (remainderDiff === 0) {
+            // When remainders are equal, prioritize the service with fewer units
+            return a.units - b.units;
           }
-
-          // If remainders are the same, compare by service time in descending order
-          return b.minutes - a.minutes;
+          return remainderDiff;
         });
-
-        // After sorting, console log the sorted services
-        console.log('Sorted timeBasedServices:');
-        timeBasedServices.forEach((service) => {
-          console.log(
-            `Service ID: ${service.id}, Minutes: ${service.minutes}, Remainder: ${service.remainder}`
-          );
-        });
-
-        let remainingUnits =
-          totalUnits -
-          timeBasedServices.reduce((acc, service) => acc + service.units, 0);
-
-        // console.log('remaining units', remainingUnits);
-        console.log('total units', totalUnits);
-
-        // Initial setup for totalAllocatedUnits and totalUnitsAllowed
-        let totalAllocatedUnits = timeBasedServices.reduce(
-          (sum, service) => sum + service.units,
-          0
+        console.log(
+          'Step 3 & 4 - Sorted Services by Remainder Minutes and then by Current Units:',
+          timeBasedServices
         );
 
-        // Distribute remaining units
-        timeBasedServices.forEach((service) => {
-          console.log('Service:', service);
+        // Calculate how many additional units can be allocated
+        let additionalUnits =
+          Math.floor(totalRemainderMinutes / 15) +
+          (totalRemainderMinutes % 15 >= 8 ? 1 : 0);
+        console.log(
+          'Step 3 & 4 - Additional Units Available:',
+          additionalUnits
+        );
 
-          if (totalAllocatedUnits < totalUnits) {
-            const potentialNewTotal = service.units + 1; // Potential new total after adding a unit
-            console.log('Potential new total by service:', potentialNewTotal);
+        for (let service of timeBasedServices) {
+          console.log(
+            `Allocating units to Service: ${service.code}, ${service.remainder} Remaining Additional Units: ${additionalUnits}`
+          );
+          if (additionalUnits <= 0) break; // Stop if no additional units left
 
-            const unitsNeededForNextUnit =
-              Math.ceil(service.minutes / 15) - service.units; // Units needed to reach the next 15-minute block
-
-            // Check if the service can receive an additional unit without exceeding totalUnitsAllowed
-            if (
-              unitsNeededForNextUnit > 0 &&
-              totalAllocatedUnits + 1 <= totalUnits
-            ) {
-              service.units += 1; // Add one more unit
-              totalAllocatedUnits += 1; // Update the count of total allocated units
-              console.log(
-                'Remaining units after allocation:',
-                totalUnits - totalAllocatedUnits
-              );
-            }
-          }
-        });
-      } else {
-        // Sort services by minutes in descending order
-        timeBasedServices.sort((a, b) => b.minutes - a.minutes);
-        let remainingUnits =
-          totalUnits -
-          timeBasedServices.reduce((sum, service) => sum + service.units, 0);
-
-        // Distribute remaining units, prioritizing services with more minutes
-        timeBasedServices.forEach((service) => {
-          if (remainingUnits <= 0) return; // Stop if no units left
-
-          // Calculate the maximum eligible units for this service based on its minutes
-          const maxEligibleUnits = Math.ceil(service.minutes / 15);
-
-          // Only assign a unit if the service hasn't reached its max eligible units
-          if (service.units < maxEligibleUnits) {
-            service.units += 1;
-            remainingUnits--;
-
-            // Immediately check if there are no remaining units after the assignment
-            if (remainingUnits <= 0) return;
-          }
-        });
-
-        // Double-check to prevent over-distribution
-        if (remainingUnits < 0) {
-          // Identify the last service that received an extra unit and remove it
-          for (let i = timeBasedServices.length - 1; i >= 0; i--) {
-            if (timeBasedServices[i].units > 0) {
-              timeBasedServices[i].units -= 1;
-              break; // Stop after adjusting the last service that received an extra unit
-            }
+          if (totalRemainderMinutes >= 8) {
+            service.units += 1; // Assign an additional unit
+            additionalUnits -= 1; // Decrement the additional units
+            console.log(
+              `Allocated an additional unit to Service ID: ${service.code}, Remaining Additional Units: ${additionalUnits}`
+            );
           }
         }
+      }
+
+      // Step 5: Handle Edge Cases
+      // Custom logic based on clinical judgment, service value, or other factors may be needed here.
+      console.log(
+        'Step 5 - After Handling Edge Cases (if any):',
+        timeBasedServices
+      );
+
+      // Merge back the 'Time Based' services with their new units
+      const finalServices = updatedServices.map((service) => {
+        const timeBasedService = timeBasedServices.find(
+          (s) => s.code === service.code
+        );
+        return timeBasedService || service;
+      });
+      console.log('Final Services with Updated Units:', finalServices);
+
+      // Update state to reflect the new units distribution and total calculations
+      if (needToUpdateSelectedServices(finalServices)) {
+        setSelectedServices(finalServices);
+      }
+      setTotalUnits(
+        totalUnits +
+          updatedServices.filter(
+            (service) => service.category === 'Service Based'
+          ).length
+      );
+      if (totalTimedMinutes !== currentTotalMinutes) {
+        setTotalMinutes(totalTimedMinutes);
       }
     }
 

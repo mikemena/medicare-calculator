@@ -1,6 +1,6 @@
 import React from 'react';
 import { test, expect } from '@jest/globals';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, wait } from '@testing-library/react';
 import ServiceSelector from '../src/components/ServiceSelector';
 
 describe('ServiceSelector', () => {
@@ -106,7 +106,7 @@ describe('ServiceSelector', () => {
 
     fireEvent.change(methodSelect, { target: { value: 'CMS' } });
 
-    // Select service 97110 and add 13 minutes
+    // Select service 97110 and add 15 minutes
 
     const serviceSelect = container.querySelector('#chargeSelector');
     fireEvent.change(serviceSelect, {
@@ -115,14 +115,6 @@ describe('ServiceSelector', () => {
     const minutesInput97110 = container.querySelector('#charge-97110-minutes');
     fireEvent.change(minutesInput97110, { target: { value: '15' } });
 
-    // Select service 97140 and add 8 minutes
-
-    fireEvent.change(serviceSelect, {
-      target: { value: 'Time Based::Manual therapy::97140' },
-    });
-    const minutesInput97140 = container.querySelector('#charge-97140-minutes');
-    fireEvent.change(minutesInput97140, { target: { value: '8' } });
-
     // Select service 97112 and add 23 minutes
 
     fireEvent.change(serviceSelect, {
@@ -130,6 +122,14 @@ describe('ServiceSelector', () => {
     });
     const minutesInput97112 = container.querySelector('#charge-97112-minutes');
     fireEvent.change(minutesInput97112, { target: { value: '23' } });
+
+    // Select service 97140 and add 8 minutes
+
+    fireEvent.change(serviceSelect, {
+      target: { value: 'Time Based::Manual therapy::97140' },
+    });
+    const minutesInput97140 = container.querySelector('#charge-97140-minutes');
+    fireEvent.change(minutesInput97140, { target: { value: '8' } });
 
     // Check total minutes and units
     const units97110 = container.querySelector('#charge-97110-units');
@@ -233,11 +233,11 @@ describe('ServiceSelector', () => {
 
     // Check total minutes and units
     const units97116 = container.querySelector('#charge-97116-units');
-    expect(units97116.textContent).toBe('3');
+    expect(units97116.textContent).toBe('2');
     const units97035 = container.querySelector('#charge-97035-units');
     expect(units97035.textContent).toBe('2');
     const units97761 = container.querySelector('#charge-97761-units');
-    expect(units97761.textContent).toBe('1');
+    expect(units97761.textContent).toBe('2');
     const totalMinutesDisplay = container.querySelector('#totalMinutes');
     expect(totalMinutesDisplay.textContent).toBe('83');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
@@ -567,7 +567,7 @@ describe('ServiceSelector', () => {
     const units97112 = container.querySelector('#charge-97112-units');
     expect(units97112.textContent).toBe('1');
     const totalMinutesDisplay = container.querySelector('#totalMinutes');
-    expect(totalMinutesDisplay.textContent).toBe('18');
+    expect(totalMinutesDisplay.textContent).toBe('23');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
     expect(totalUnitsDisplay.textContent).toBe('2');
   });
@@ -603,9 +603,9 @@ describe('ServiceSelector', () => {
 
     // Check total minutes and units
     const units97116 = container.querySelector('#charge-97116-units');
-    expect(units97116.textContent).toBe('0');
+    expect(units97116.textContent).toBe('1');
     const units97112 = container.querySelector('#charge-97112-units');
-    expect(units97112.textContent).toBe('2');
+    expect(units97112.textContent).toBe('1');
     const totalMinutesDisplay = container.querySelector('#totalMinutes');
     expect(totalMinutesDisplay.textContent).toBe('25');
     const totalUnitsDisplay = container.querySelector('#totalUnits');
@@ -781,9 +781,9 @@ describe('ServiceSelector', () => {
 
     // Check total minutes and units
     const units97110 = container.querySelector('#charge-97110-units');
-    expect(units97110.textContent).toBe('2');
+    expect(units97110.textContent).toBe('1');
     const units97116 = container.querySelector('#charge-97116-units');
-    expect(units97116.textContent).toBe('0');
+    expect(units97116.textContent).toBe('1');
     const units97112 = container.querySelector('#charge-97112-units');
     expect(units97112.textContent).toBe('0');
     const units97140 = container.querySelector('#charge-97140-units');
