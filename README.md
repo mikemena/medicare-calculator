@@ -4,11 +4,6 @@
 
 #### The calculator app would allow therapists to input the total duration of a treatment session and automatically calculate the appropriate billable units based on the 8-minute rule. This would help prevent potential fraud or abuse of services by accurately reflecting the time spent on each intervention, ensuring proper reimbursement from Medicare.
 
-## Rules
-
-1 - If CMS and service-based, then set unit to 1
-2 - If AMA and service-based, then set unit to 0
-
 # CMS Unit Distribution Logic
 
 ## Step 1: Calculate Initial Units for Each Service
@@ -26,11 +21,11 @@ Check each service's remainder minutes to see if it's 8 minutes or more. If so, 
 
 ## Step 4: Distribute Additional Units Based on Aggregated Remainder Minutes
 
-Using the aggregated remainder minutes from Step 2, distribute additional units. For every 15 minutes or part thereof (providing it's at least 8 minutes), allocate an additional unit. The distribution should prioritize services with larger remainder minutes first, as they are closer to completing another full unit.
+Using the aggregated remainder minutes from Step 2, distribute additional units. For every 15 minutes or part thereof (providing it's at least 8 minutes), allocate an additional unit. The distribution should prioritize services with the largest remainder minutes first, as they are closer to completing another full unit. If services have equal remainder minutes, then they should be further sorted by those with the fewest assigned units.
 
 ## Step 5: Handle Edge Cases
 
-In scenarios where multiple services have similar remainder minutes, or when the aggregated remainder minutes slightly exceed 15 (thus qualifying for only one additional unit), you may need to prioritize based on clinical judgment, service value, or other factors.
+This step in the code is currently a placeholder for any potential scenarios not covered by Steps 1-4. At this time, all scenarios are properly accounted for using Steps 1-4.
 
 # AMA Unit Distribution Logic
 
